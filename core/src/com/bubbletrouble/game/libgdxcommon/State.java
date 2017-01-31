@@ -9,13 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class State
 {
 	protected OrthographicCamera camera = new OrthographicCamera();
-	protected StateManager stateManager;
 	protected InputProcessor inputHandler;
-
-	protected State(StateManager stateManager)
-	{
-		this.stateManager = stateManager;
-	}
 
 	public abstract void render(SpriteBatch batch);
 
@@ -25,10 +19,4 @@ public abstract class State
 	{
 		Gdx.input.setInputProcessor(inputHandler);
 	}
-
-	public StateManager getStateManager()
-	{
-		return stateManager;
-	}
-
 }
