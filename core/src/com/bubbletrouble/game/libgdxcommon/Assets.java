@@ -1,0 +1,82 @@
+package com.bubbletrouble.game.libgdxcommon;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+
+public class Assets
+{
+	private final String assetsPath = "assets";
+	private Map<String, Class<?>> classTypes = new HashMap<String, Class<?>>();
+	private AssetManager assets = new AssetManager();
+
+	public Assets()
+	{
+		addClassTypes();
+		loadAll();
+	}
+
+	private void addClassTypes()
+	{
+		classTypes.put("png", Texture.class);
+		classTypes.put("jpg", Texture.class);
+		classTypes.put("bmp", Texture.class);
+		classTypes.put("mp3", Music.class);
+		classTypes.put("ogg", Sound.class);
+	}
+
+	public void loadAll()
+	{
+		FileHandle[] files = Gdx.files.internal(assetsPath).list();
+		for (FileHandle file : files)
+			assets.load(file.path(), getClassFromPath(file.path()));
+
+		assets.finishLoading();
+	}
+
+	private Class<?> getClassFromPath(String path)
+	{
+		String extension = getExtension(path);
+		if (classTypes.containsKey(extension))
+			return classTypes.get(extension);
+		else
+			throw new UnknownExtensionException(extension);
+	}
+
+	private String getExtension(String path)
+	{
+		int extensionStartIndex = path.lastIndexOf('.') + 1;
+		return path.substring(extensionStartIndex);
+	}
+
+	public <T> T get(String fileName)
+	{
+		T asset = assets.get(assetsPath + '/' + fileName);
+		return asset;
+	}
+
+	public <T> T get(String fileName, Class<T> classType)
+	{
+		return assets.get(assetsPath + '/' + fileName, classType);
+	}
+
+	public void dispose()
+	{
+		assets.dispose();
+	}
+
+	private class UnknownExtensionException extends GameException
+	{
+		public UnknownExtensionException(String extension)
+		{
+			super("Extension " + extension + "is not recognized");
+		}
+	}
+
+}
