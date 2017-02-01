@@ -2,9 +2,9 @@ package com.bubbletrouble.game.libgdxcommon;
 
 public class BadTypeException extends GameException
 {
-	public BadTypeException(String className)
+	public BadTypeException(String expected)
 	{
-		super("Bad type, " + className + " expected");
+		super("Bad type, " + expected + " expected");
 	}
 
 }

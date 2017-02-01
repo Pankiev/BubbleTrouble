@@ -3,8 +3,8 @@ package com.bubbletrouble.game.states;
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.KeyHandler;
 import com.bubbletrouble.game.libgdxcommon.communication.action.Action;
-import com.bubbletrouble.game.libgdxcommon.communication.action.ActionInfo;
 import com.bubbletrouble.game.objects.actions.PlayerActions;
+import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.esotericsoftware.kryonet.Client;
 
 public class PlayInputHandler extends InputProcessorAdapter

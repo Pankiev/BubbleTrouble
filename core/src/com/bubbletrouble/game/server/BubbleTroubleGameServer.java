@@ -4,12 +4,16 @@ import java.io.IOException;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
-import com.bubbletrouble.game.server.listener.ServerListener;
+import com.bubbletrouble.game.libgdxcommon.communication.action.Action;
+import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.states.PlayServerState;
 import com.bubbletrouble.game.states.PlayState;
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 public class BubbleTroubleGameServer extends ApplicationAdapter
@@ -24,7 +28,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	@Override
 	public void create()
 	{
-		BubbleTroubleGameClient.initialize();
+		BubbleTroubleGameClient.assets = new Assets();
+		BubbleTroubleGameClient.assets.loadAll();
 		server = new Server();
 		registerPackets();
 		server.start();
@@ -65,6 +70,22 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private void update()
 	{
 		playState.update();
+	}
+
+	private void actionRecieved(ActionInfo actionInfo)
+	{
+		int id = actionInfo.targetId;
+		Action action = actionInfo.action;
+	}
+
+	private class ServerListener extends Listener
+	{
+		@Override
+		public void received(Connection connection, Object object)
+		{
+			if (object instanceof ActionInfo)
+				actionRecieved((ActionInfo) object);
+		}
 	}
 
 	private class ServerBindingExcepiton extends GameException

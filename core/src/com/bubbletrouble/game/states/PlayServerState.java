@@ -1,5 +1,6 @@
 package com.bubbletrouble.game.states;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.kryonet.Server;
 
 public class PlayServerState extends PlayState
@@ -9,5 +10,16 @@ public class PlayServerState extends PlayState
 	public PlayServerState(Server server)
 	{
 		this.server = server;
+	}
+
+	@Override
+	public void update()
+	{
+		super.update();
+	}
+
+	@Override
+	public void render(SpriteBatch batch)
+	{
 	}
 }

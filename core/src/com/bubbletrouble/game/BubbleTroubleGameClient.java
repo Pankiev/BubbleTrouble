@@ -9,6 +9,7 @@ import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
+import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.states.ConnectionState;
 import com.bubbletrouble.game.states.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
@@ -20,18 +21,14 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	public static Assets assets;
 	public static StateManager states;
 
-	public static void initialize()
-	{
-		assets = new Assets();
-		states = new StateManager();
-	}
-
 	@Override
 	public void create()
 	{
 		batch = new SpriteBatch();
-		initialize();
+		assets = new Assets();
+		states = new StateManager();
 		client = new Client();
+		PacketsRegisterer.registerAllAnnotated(client.getKryo());
 		states.push(new PlayClientState(client));
 		states.push(new ConnectionState(client));
 	}
@@ -39,9 +36,15 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	@Override
 	public void render()
 	{
-		handleInput();
+		update();
 		clearScreen();
 		actualRender();
+	}
+
+	private void update()
+	{
+		handleInput();
+		states.update();
 	}
 
 	private void handleInput()
