@@ -6,11 +6,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
-import com.bubbletrouble.game.libgdxcommon.communication.action.Action;
+import com.bubbletrouble.game.server.packets.Action;
 import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.states.PlayServerState;
-import com.bubbletrouble.game.states.PlayState;
+import com.bubbletrouble.game.states.play.PlayServerState;
+import com.bubbletrouble.game.states.play.PlayState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -76,6 +76,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		int id = actionInfo.targetId;
 		Action action = actionInfo.action;
+		System.out.println(id);
+		System.out.println(action);
 	}
 
 	private class ServerListener extends Listener

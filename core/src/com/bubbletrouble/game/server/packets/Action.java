@@ -1,10 +1,8 @@
-package com.bubbletrouble.game.libgdxcommon.communication.action;
+package com.bubbletrouble.game.server.packets;
 
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 
 public interface Action
 {
-	public static final Action NoAction = (gameObject) -> {};
-
 	void makeAction(GameObject gameObject);
 }

@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.states;
+package com.bubbletrouble.game.states.play;
 
 import java.util.Map;
 import java.util.TreeMap;

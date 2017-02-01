@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.states;
+package com.bubbletrouble.game.states.connection;
 
 import java.io.IOException;
 

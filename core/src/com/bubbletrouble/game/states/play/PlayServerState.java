@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.states;
+package com.bubbletrouble.game.states.play;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.esotericsoftware.kryonet.Server;

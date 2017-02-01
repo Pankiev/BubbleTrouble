@@ -10,8 +10,8 @@ import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.states.ConnectionState;
-import com.bubbletrouble.game.states.PlayClientState;
+import com.bubbletrouble.game.states.connection.ConnectionState;
+import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
 public class BubbleTroubleGameClient extends ApplicationAdapter
@@ -24,6 +24,7 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	@Override
 	public void create()
 	{
+		// PropertyConfigurator.configure("log4j.properties");
 		batch = new SpriteBatch();
 		assets = new Assets();
 		states = new StateManager();
