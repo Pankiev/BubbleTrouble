@@ -1,29 +1,26 @@
-package com.bubbletrouble.game.server;
+package com.bubbletrouble.game;
 
 import java.io.IOException;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
-import com.bubbletrouble.game.server.packets.Action;
 import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.states.play.PlayServerState;
-import com.bubbletrouble.game.states.play.PlayState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 
 public class BubbleTroubleGameServer extends ApplicationAdapter
 {
 	public static final int tcpPort = 8000;
 	public static final int udpPort = 8001;
 
-	boolean isRunning = true;
-	Server server;
-	PlayState playState;
+	private Server server;
+	private PlayServerState playState;
 
 	@Override
 	public void create()
@@ -74,19 +71,31 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private void actionRecieved(ActionInfo actionInfo)
 	{
-		int id = actionInfo.targetId;
-		Action action = actionInfo.action;
-		System.out.println(id);
-		System.out.println(action);
+		playState.makeAction(actionInfo);
 	}
 
 	private class ServerListener extends Listener
 	{
 		@Override
+		public void connected(Connection connection)
+		{
+			playState.addPlayer(connection.getID());
+			Log.info(">> Player added " + connection.getID());
+		}
+
+		@Override
+		public void disconnected(Connection connection)
+		{
+			playState.removePlayer(connection.getID());
+			Log.info(">> Player removed " + connection.getID());
+		}
+
+		@Override
 		public void received(Connection connection, Object object)
 		{
 			if (object instanceof ActionInfo)
 				actionRecieved((ActionInfo) object);
+			// Log.info("action received : " + object);
 		}
 	}
 

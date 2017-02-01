@@ -4,9 +4,10 @@ import java.io.IOException;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.BubbleTroubleGameServer;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.server.BubbleTroubleGameServer;
+import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
 public class ConnectionState extends State
@@ -41,7 +42,7 @@ public class ConnectionState extends State
 	public void update()
 	{
 		if (client.isConnected())
-			BubbleTroubleGameClient.states.pop();
+			BubbleTroubleGameClient.states.set(new PlayClientState(client));
 	}
 
 	private class ConnectionErrorException extends GameException

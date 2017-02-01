@@ -11,7 +11,6 @@ import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.states.connection.ConnectionState;
-import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
 public class BubbleTroubleGameClient extends ApplicationAdapter
@@ -24,13 +23,11 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	@Override
 	public void create()
 	{
-		// PropertyConfigurator.configure("log4j.properties");
 		batch = new SpriteBatch();
 		assets = new Assets();
 		states = new StateManager();
 		client = new Client();
 		PacketsRegisterer.registerAllAnnotated(client.getKryo());
-		states.push(new PlayClientState(client));
 		states.push(new ConnectionState(client));
 	}
 
@@ -51,13 +48,14 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	private void handleInput()
 	{
 		InputProcessorAdapter inputHandler = getInputProcessor();
-		inputHandler.process();
+		if (inputHandler != null)
+			inputHandler.process();
 	}
 
 	private InputProcessorAdapter getInputProcessor()
 	{
 		InputProcessor inputHandler = Gdx.input.getInputProcessor();
-		if (!(inputHandler instanceof InputProcessorAdapter))
+		if (inputHandler != null && !(inputHandler instanceof InputProcessorAdapter))
 			throw new BadInputHandlerException(inputHandler.getClass());
 		return (InputProcessorAdapter) inputHandler;
 	}

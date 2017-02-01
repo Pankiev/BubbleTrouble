@@ -1,6 +1,7 @@
 package com.bubbletrouble.game.states.play;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,5 +24,25 @@ public abstract class PlayState extends State
 	{
 		for (Player player : players.values())
 			player.update();
+	}
+
+	public void addPlayer(int id)
+	{
+		players.put(id, new Player());
+	}
+
+	public void removePlayer(int id)
+	{
+		players.remove(id);
+	}
+
+	public Player getPlayer(int id)
+	{
+		return players.get(id);
+	}
+
+	public Set<Integer> getPlayersIds()
+	{
+		return players.keySet();
 	}
 }
