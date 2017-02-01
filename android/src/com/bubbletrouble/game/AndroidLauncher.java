@@ -4,13 +4,13 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.bubbletrouble.game.BubbleTroubleGame;
+import com.bubbletrouble.game.BubbleTroubleGameClient;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new BubbleTroubleGame(), config);
+		initialize(new BubbleTroubleGameClient(), config);
 	}
 }

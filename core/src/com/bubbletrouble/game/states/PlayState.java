@@ -4,16 +4,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.objects.Player;
 
-public class PlayState extends State
+public abstract class PlayState extends State
 {
-	public Player player;
-
-	public PlayState()
-	{
-		inputHandler = new PlayInputHandler(this);
-		activateInputHandler();
-		player = new Player();
-	}
+	protected Player player = new Player();
 
 	@Override
 	public void render(SpriteBatch batch)
@@ -24,8 +17,6 @@ public class PlayState extends State
 	@Override
 	public void update()
 	{
-		// TODO Auto-generated method stub
-
+		player.update();
 	}
-
 }

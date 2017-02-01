@@ -2,14 +2,10 @@ package com.bubbletrouble.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
-import com.bubbletrouble.game.libgdxcommon.GameException;
-import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
-import com.bubbletrouble.game.states.PlayState;
 
 public class BubbleTroubleGame extends ApplicationAdapter
 {
@@ -17,13 +13,13 @@ public class BubbleTroubleGame extends ApplicationAdapter
 	public static Assets assets;
 	public static StateManager states;
 
+
 	@Override
 	public void create()
 	{
 		batch = new SpriteBatch();
 		assets = new Assets();
 		states = new StateManager();
-		states.push(new PlayState());
 	}
 
 	@Override
@@ -37,16 +33,6 @@ public class BubbleTroubleGame extends ApplicationAdapter
 	private void update()
 	{
 		states.update();
-		InputProcessorAdapter inputHandler = getInputProcessor();
-		inputHandler.process();
-	}
-
-	private InputProcessorAdapter getInputProcessor()
-	{
-		InputProcessor inputHandler = Gdx.input.getInputProcessor();
-		if (!(inputHandler instanceof InputProcessorAdapter))
-			throw new BadInputHandlerException(inputHandler.getClass());
-		return (InputProcessorAdapter) inputHandler;
 	}
 
 	private void clearScreen()
@@ -67,13 +53,5 @@ public class BubbleTroubleGame extends ApplicationAdapter
 	{
 		batch.dispose();
 		assets.dispose();
-	}
-
-	private class BadInputHandlerException extends GameException
-	{
-		public BadInputHandlerException(Class<?> badType)
-		{
-			super("An instance of " + badType.getName() + "expected");
-		}
 	}
 }

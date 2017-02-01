@@ -2,21 +2,62 @@ package com.bubbletrouble.game.states;
 
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.KeyHandler;
+import com.bubbletrouble.game.libgdxcommon.communication.action.Action;
+import com.bubbletrouble.game.libgdxcommon.communication.action.ActionInfo;
+import com.bubbletrouble.game.objects.actions.PlayerActions;
+import com.esotericsoftware.kryonet.Client;
 
 public class PlayInputHandler extends InputProcessorAdapter
 {
-	PlayState playState;
+	private PlayClientState playState;
 
-	public PlayInputHandler(PlayState state)
+	public PlayInputHandler(PlayClientState playState)
 	{
-		playState = state;
+		this.playState = playState;
+	}
+
+	private void sendAction(Action action)
+	{
+		ActionInfo actionInfo = new ActionInfo();
+		actionInfo.targetId = client().getID();
+		actionInfo.action = action;
+		client().sendTCP(actionInfo);
+	}
+
+	private Client client()
+	{
+		return playState.client;
 	}
 
 	public class RightKeyHandler implements KeyHandler
 	{
 		public void handle()
 		{
-			playState.player.moveRight();
+			sendAction(PlayerActions.moveRight);
+		}
+	}
+
+	public class LeftKeyHandler implements KeyHandler
+	{
+		public void handle()
+		{
+			sendAction(PlayerActions.moveLeft);
+		}
+	}
+
+	public class UpKeyHandler implements KeyHandler
+	{
+		public void handle()
+		{
+			sendAction(PlayerActions.moveUp);
+		}
+	}
+
+	public class DownUpKeyHandler implements KeyHandler
+	{
+		public void handle()
+		{
+			sendAction(PlayerActions.moveDown);
 		}
 	}
 }

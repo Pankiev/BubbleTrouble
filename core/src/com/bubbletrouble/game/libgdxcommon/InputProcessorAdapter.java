@@ -96,4 +96,14 @@ public class InputProcessorAdapter implements InputProcessor
 		return new KeyHandlerFactory(this).produce(key);
 	}
 
+	public void simulateKeyUpInput(int keyCode)
+	{
+		keyUp(keyCode);
+	}
+
+	public void simulateKeyDownInput(int keyCode)
+	{
+		keyDown(keyCode);
+	}
+
 }
