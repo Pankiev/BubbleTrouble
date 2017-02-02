@@ -1,4 +1,6 @@
-package com.bubbletrouble.game.server.packets;
+package com.bubbletrouble.game.server.packets.player;
+
+import com.bubbletrouble.game.server.packets.Info;
 
 public class PlayerAddInfo extends Info
 {

@@ -9,8 +9,8 @@ import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.Action;
 import com.bubbletrouble.game.server.packets.ActionInfo;
-import com.bubbletrouble.game.server.packets.PlayerAddInfo;
-import com.bubbletrouble.game.server.packets.PlayerRemoveInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.esotericsoftware.minlog.Log;
 
 public abstract class PlayState extends State
@@ -34,8 +34,8 @@ public abstract class PlayState extends State
 	public void addPlayer(PlayerAddInfo info)
 	{
 		Player newPlayer = new Player();
-		newPlayer.x = info.x;
-		newPlayer.y = info.y;
+		newPlayer.setX(info.x);
+		newPlayer.setY(info.y);
 		players.put(info.id, newPlayer);
 	}
 
@@ -58,8 +58,8 @@ public abstract class PlayState extends State
 		{
 			PlayerAddInfo playerInfo = new PlayerAddInfo();
 			playerInfo.id = player.getKey();
-			playerInfo.x = player.getValue().x;
-			playerInfo.y = player.getValue().y;
+			playerInfo.x = player.getValue().getX();
+			playerInfo.y = player.getValue().getY();
 			playersInfo[i] = playerInfo;
 			i++;
 		}

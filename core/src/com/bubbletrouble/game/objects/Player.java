@@ -22,7 +22,7 @@ public class Player extends MovableGameObject
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		batch.draw(lookout, x, y);
+		batch.draw(getTexture(), getX(), getY());
 	}
 
 

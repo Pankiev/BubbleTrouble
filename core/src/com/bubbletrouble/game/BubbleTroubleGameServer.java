@@ -7,8 +7,9 @@ import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.PlayerAddInfo;
-import com.bubbletrouble.game.server.packets.PlayerRemoveInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerPositionUpdateInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -71,12 +72,6 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		playState.update();
 	}
 
-	private void actionRecieved(ActionInfo actionInfo, Connection source)
-	{
-		playState.makeAction(actionInfo);
-		server.sendToAllTCP(actionInfo);
-	}
-
 	private void userConnected(Connection connection)
 	{
 		Integer id = connection.getID();
@@ -84,6 +79,22 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		server.sendToAllExceptTCP(id, new PlayerAddInfo(id));
 		playState.addPlayer(new PlayerAddInfo(connection.getID()));
 		Log.info(">> Player added " + connection.getID());
+	}
+
+	private void userDisconnected(Connection connection)
+	{
+		PlayerRemoveInfo removePlayer = new PlayerRemoveInfo(connection.getID());
+		server.sendToAllExceptTCP(connection.getID(), removePlayer);
+		playState.removePlayer(removePlayer);
+		Log.info(">> Player removed " + connection.getID());
+	}
+
+	private void actionRecieved(ActionInfo actionInfo, Connection source)
+	{
+		// playState.makeAction(actionInfo);
+		// server.sendToAllTCP(actionInfo);
+		PlayerPositionUpdateInfo updateInfo = playState.makeActionAndGetDifference(actionInfo);
+		server.sendToAllTCP(updateInfo);
 	}
 
 	private class ServerListener extends Listener
@@ -100,20 +111,11 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 			userDisconnected(connection);
 		}
 
-		private void userDisconnected(Connection connection)
-		{
-			PlayerRemoveInfo removePlayer = new PlayerRemoveInfo(connection.getID());
-			server.sendToAllExceptTCP(connection.getID(), removePlayer);
-			playState.removePlayer(removePlayer);
-			Log.info(">> Player removed " + connection.getID());
-		}
-
 		@Override
 		public void received(Connection connection, Object object)
 		{
 			if (object instanceof ActionInfo)
 				actionRecieved((ActionInfo) object, connection);
-			// Log.info("action received : " + object);
 		}
 	}
 

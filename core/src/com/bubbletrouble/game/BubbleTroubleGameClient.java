@@ -11,10 +11,11 @@ import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.PlayerAddInfo;
-import com.bubbletrouble.game.server.packets.PlayerRemoveInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerPositionUpdateInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
-import com.bubbletrouble.game.states.play.PlayState;
+import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -51,9 +52,9 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	@Override
 	public void render()
 	{
-		update();
 		clearScreen();
 		actualRender();
+		update();
 	}
 
 	private void update()
@@ -61,6 +62,11 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		handleInput();
 		states.update();
 	}
+
+
+	/*
+	 * private boolean isStateToHandle() { return !states.empty(); }
+	 */
 
 	private void handleInput()
 	{
@@ -97,14 +103,14 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		assets.dispose();
 	}
 
-	private PlayState findPlayState()
+	private PlayClientState findPlayState()
 	{
 		return states.findPlayState();
 	}
 
 	private void actionRecieved(ActionInfo object)
 	{
-		PlayState playState = findPlayState();
+		PlayClientState playState = findPlayState();
 		if (playState != null)
 			playState.makeAction(object);
 	}
@@ -114,10 +120,11 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		@Override
 		public void received(Connection connection, Object object)
 		{
+			PlayClientState playState = findPlayState();
 			if (object instanceof PlayerAddInfo[])
 			{
 				PlayerAddInfo[] playerInfo = (PlayerAddInfo[]) object;
-				PlayState playState = findPlayState();
+
 				while (playState == null)
 				{
 					Sleeper.sleep(10);
@@ -128,19 +135,20 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 			else if (object instanceof PlayerAddInfo)
 			{
 				PlayerAddInfo playerInfo = (PlayerAddInfo) object;
-				PlayState playState = findPlayState();
-				if (playState != null)
-					playState.addPlayer(playerInfo);
+				playState.addPlayer(playerInfo);
 			} 
 			else if(object instanceof PlayerRemoveInfo)
 			{
 				PlayerRemoveInfo playerInfo = (PlayerRemoveInfo) object;
-				PlayState playState = findPlayState();
-				if (playState != null)
-					playState.removePlayer(playerInfo);
+				playState.removePlayer(playerInfo);
 			}
-			else if (object instanceof ActionInfo)
-				actionRecieved((ActionInfo) object);
+			// else if (object instanceof ActionInfo)
+			// actionRecieved((ActionInfo) object);
+			else if (object instanceof PlayerPositionUpdateInfo)
+			{
+				PlayerPositionUpdateInfo updateInfo = (PlayerPositionUpdateInfo) object;
+				playState.update(updateInfo);
+			}
 		}
 
 	}

@@ -14,22 +14,22 @@ public abstract class MovableGameObject extends GameObject
 
 	public void moveLeft()
 	{
-		x -= getMoveSpeed() * Gdx.graphics.getDeltaTime();
+		setX(getX() - getMoveSpeed() * Gdx.graphics.getDeltaTime());
 	}
 
 	public void moveRight()
 	{
-		x += getMoveSpeed() * Gdx.graphics.getDeltaTime();
+		setX(getX() + getMoveSpeed() * Gdx.graphics.getDeltaTime());
 	}
 
 	public void moveDown()
 	{
-		y -= getMoveSpeed() * Gdx.graphics.getDeltaTime();
+		setY(getY() - getMoveSpeed() * Gdx.graphics.getDeltaTime());
 	}
 
 	public void moveUp()
 	{
-		y += getMoveSpeed() * Gdx.graphics.getDeltaTime();
+		setY(getY() + getMoveSpeed() * Gdx.graphics.getDeltaTime());
 	}
 
 	public float getMoveSpeed()

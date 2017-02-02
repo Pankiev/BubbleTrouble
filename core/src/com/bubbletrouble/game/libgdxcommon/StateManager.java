@@ -2,8 +2,9 @@ package com.bubbletrouble.game.libgdxcommon;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.states.play.PlayState;
+import com.bubbletrouble.game.states.play.PlayClientState;
 
 public class StateManager
 {
@@ -38,6 +39,8 @@ public class StateManager
 	public void pop()
 	{
 		states.pop();
+		if (states.empty())
+			Gdx.app.exit();
 	}
 
 	public boolean empty()
@@ -45,12 +48,12 @@ public class StateManager
 		return states.empty();
 	}
 
-	public PlayState findPlayState()
+	public PlayClientState findPlayState()
 	{
-		PlayState playState = null;
+		PlayClientState playState = null;
 		for (State state : states)
-			if (state instanceof PlayState)
-				return (PlayState) state;
+			if (state instanceof PlayClientState)
+				return (PlayClientState) state;
 
 		return playState;
 	}

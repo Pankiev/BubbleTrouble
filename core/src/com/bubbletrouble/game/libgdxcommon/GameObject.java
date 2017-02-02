@@ -2,28 +2,20 @@ package com.bubbletrouble.game.libgdxcommon;
 
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 
-public abstract class GameObject extends Rectangle
+public abstract class GameObject extends Sprite
 {
-	protected Texture lookout;
 	
 	protected GameObject(Texture lookout)
 	{
 		super();
-		this.lookout = lookout;
-		setSizeFromTexture();
+		super.setTexture(lookout);
+		// super.setRegion(lookout);
 	}
 
 	public abstract void update();
 
 	public abstract void render(SpriteBatch batch);
-	
-	public void setSizeFromTexture()
-	{
-		this.width = lookout.getWidth();
-		this.height = lookout.getHeight();
-	}
-
 }
