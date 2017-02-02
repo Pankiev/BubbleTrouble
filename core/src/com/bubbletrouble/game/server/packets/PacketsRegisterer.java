@@ -15,6 +15,7 @@ import com.esotericsoftware.kryo.Kryo;
 public class PacketsRegisterer
 {
 	private final static Class<? extends Annotation> defaultAnnotationType = Registerable.class;
+	private final static Class<? extends Annotation> defaultAnnotationBase = RegisterableBase.class;
 
 	public static void registerAllAnnotated(Kryo destination)
 	{
@@ -41,7 +42,16 @@ public class PacketsRegisterer
 	{
 		Reflections reflections = new Reflections(sourcePackageName);
 		Set<Class<?>> registerableTypes = reflections.getTypesAnnotatedWith(annotationType);
-		registerCollection(destination, registerableTypes);
+		destination = registerCollection(destination, registerableTypes);
+		Set<Class<?>> registerableBaseTypes = reflections.getTypesAnnotatedWith(defaultAnnotationBase);
+		destination = registerSubTypesOf(destination, registerableBaseTypes);
+		return destination;
+	}
+
+	private static Kryo registerSubTypesOf(Kryo destination, Set<Class<?>> registerableBaseTypes)
+	{
+		for (Class<?> baseType : registerableBaseTypes)
+			destination = registerAllSubtypes(destination, baseType);
 		return destination;
 	}
 
@@ -50,6 +60,7 @@ public class PacketsRegisterer
 		List<Class<?>> sorted = sort(types);
 		for (Class<?> registerableType : sorted)
 			destination = registerType(destination, registerableType);
+
 		return destination;
 	}
 
@@ -96,6 +107,5 @@ public class PacketsRegisterer
 		registerCollection(destination, subtypes);
 		return destination;
 	}
-
 
 }

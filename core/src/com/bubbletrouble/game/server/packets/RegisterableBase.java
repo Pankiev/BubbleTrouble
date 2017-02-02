@@ -1,7 +1,6 @@
 package com.bubbletrouble.game.server.packets;
 
-@RegisterableBase
-public abstract class Info
+public @interface RegisterableBase
 {
 
 }

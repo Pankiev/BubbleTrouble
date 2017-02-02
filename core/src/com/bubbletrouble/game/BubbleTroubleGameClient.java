@@ -10,9 +10,9 @@ import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.ActionInfo;
-import com.bubbletrouble.game.server.packets.Info;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.PlayerInfo;
+import com.bubbletrouble.game.server.packets.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.play.PlayState;
 import com.esotericsoftware.kryo.Kryo;
@@ -46,7 +46,6 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	{
 		Kryo kryo = client.getKryo();
 		PacketsRegisterer.registerAllAnnotated(kryo);
-		PacketsRegisterer.registerAllSubtypes(kryo, Info.class);
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 
 	private void clearScreen()
 	{
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
@@ -115,9 +114,9 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		@Override
 		public void received(Connection connection, Object object)
 		{
-			if (object instanceof PlayerInfo[])
+			if (object instanceof PlayerAddInfo[])
 			{
-				PlayerInfo[] playerInfo = (PlayerInfo[]) object;
+				PlayerAddInfo[] playerInfo = (PlayerAddInfo[]) object;
 				PlayState playState = findPlayState();
 				while (playState == null)
 				{
@@ -126,13 +125,20 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				}
 				playState.addPlayers(playerInfo);
 			} 
-			else if (object instanceof PlayerInfo)
+			else if (object instanceof PlayerAddInfo)
 			{
-				PlayerInfo playerInfo = (PlayerInfo) object;
+				PlayerAddInfo playerInfo = (PlayerAddInfo) object;
 				PlayState playState = findPlayState();
 				if (playState != null)
 					playState.addPlayer(playerInfo);
 			} 
+			else if(object instanceof PlayerRemoveInfo)
+			{
+				PlayerRemoveInfo playerInfo = (PlayerRemoveInfo) object;
+				PlayState playState = findPlayState();
+				if (playState != null)
+					playState.removePlayer(playerInfo);
+			}
 			else if (object instanceof ActionInfo)
 				actionRecieved((ActionInfo) object);
 		}

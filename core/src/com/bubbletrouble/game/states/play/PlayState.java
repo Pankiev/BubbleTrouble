@@ -9,7 +9,8 @@ import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.Action;
 import com.bubbletrouble.game.server.packets.ActionInfo;
-import com.bubbletrouble.game.server.packets.PlayerInfo;
+import com.bubbletrouble.game.server.packets.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.PlayerRemoveInfo;
 import com.esotericsoftware.minlog.Log;
 
 public abstract class PlayState extends State
@@ -30,7 +31,7 @@ public abstract class PlayState extends State
 			player.update();
 	}
 
-	public void addPlayer(PlayerInfo info)
+	public void addPlayer(PlayerAddInfo info)
 	{
 		Player newPlayer = new Player();
 		newPlayer.x = info.x;
@@ -38,9 +39,9 @@ public abstract class PlayState extends State
 		players.put(info.id, newPlayer);
 	}
 
-	public void removePlayer(int id)
+	public void removePlayer(PlayerRemoveInfo playerInfo)
 	{
-		players.remove(id);
+		players.remove(playerInfo.id);
 	}
 
 	public Player getPlayer(int id)
@@ -48,14 +49,14 @@ public abstract class PlayState extends State
 		return players.get(id);
 	}
 
-	public PlayerInfo[] getPlayersInfo()
+	public PlayerAddInfo[] getPlayersInfo()
 	{
 		int playersCount = countPlayers();
-		PlayerInfo[] playersInfo = new PlayerInfo[playersCount];
+		PlayerAddInfo[] playersInfo = new PlayerAddInfo[playersCount];
 		int i=0;
 		for (Entry<Integer, Player> player : players.entrySet())
 		{
-			PlayerInfo playerInfo = new PlayerInfo();
+			PlayerAddInfo playerInfo = new PlayerAddInfo();
 			playerInfo.id = player.getKey();
 			playerInfo.x = player.getValue().x;
 			playerInfo.y = player.getValue().y;
@@ -71,9 +72,9 @@ public abstract class PlayState extends State
 		return players.values().size();
 	}
 
-	public void addPlayers(PlayerInfo[] ids)
+	public void addPlayers(PlayerAddInfo[] ids)
 	{
-		for (PlayerInfo playerInfo : ids)
+		for (PlayerAddInfo playerInfo : ids)
 		{
 			Log.info("Adding player " + playerInfo + "to " + ((PlayClientState) this).client.getID());
 			addPlayer(playerInfo);

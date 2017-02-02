@@ -6,9 +6,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
-import com.bubbletrouble.game.server.packets.Info;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.PlayerInfo;
+import com.bubbletrouble.game.server.packets.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -41,7 +41,6 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		Kryo kryo = server.getKryo();
 		PacketsRegisterer.registerAllAnnotated(kryo);
-		PacketsRegisterer.registerAllSubtypes(kryo, Info.class);
 	}
 
 	private void tryBindingServer()
@@ -78,23 +77,34 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		server.sendToAllTCP(actionInfo);
 	}
 
+	private void userConnected(Connection connection)
+	{
+		Integer id = connection.getID();
+		server.sendToTCP(id, playState.getPlayersInfo());
+		server.sendToAllExceptTCP(id, new PlayerAddInfo(id));
+		playState.addPlayer(new PlayerAddInfo(connection.getID()));
+		Log.info(">> Player added " + connection.getID());
+	}
+
 	private class ServerListener extends Listener
 	{
 		@Override
 		public void connected(Connection connection)
 		{
-			Integer id = connection.getID();
-			server.sendToTCP(id, playState.getPlayersInfo());
-			server.sendToAllExceptTCP(id, new PlayerInfo(id));
-			playState.addPlayer(new PlayerInfo(connection.getID()));
-			Log.info(">> Player added " + connection.getID());
+			userConnected(connection);
 		}
 
 		@Override
 		public void disconnected(Connection connection)
 		{
-			server.sendToAllExceptTCP(connection.getID(), "Player remove, not implemented yet");
-			playState.removePlayer(connection.getID());
+			userDisconnected(connection);
+		}
+
+		private void userDisconnected(Connection connection)
+		{
+			PlayerRemoveInfo removePlayer = new PlayerRemoveInfo(connection.getID());
+			server.sendToAllExceptTCP(connection.getID(), removePlayer);
+			playState.removePlayer(removePlayer);
 			Log.info(">> Player removed " + connection.getID());
 		}
 

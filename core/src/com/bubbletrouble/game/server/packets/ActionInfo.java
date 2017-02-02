@@ -1,6 +1,6 @@
 package com.bubbletrouble.game.server.packets;
 
-//@Registerable
+@Registerable
 public class ActionInfo extends Info
 {
 	public int targetId = -1;

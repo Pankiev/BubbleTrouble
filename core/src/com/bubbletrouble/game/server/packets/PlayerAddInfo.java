@@ -1,14 +1,13 @@
 package com.bubbletrouble.game.server.packets;
 
-//@Registerable
-public class PlayerInfo extends Info
+public class PlayerAddInfo extends Info
 {
-	public PlayerInfo()
+	public PlayerAddInfo()
 	{
 
 	}
 
-	public PlayerInfo(int id)
+	public PlayerAddInfo(int id)
 	{
 		this.id = id;
 	}
