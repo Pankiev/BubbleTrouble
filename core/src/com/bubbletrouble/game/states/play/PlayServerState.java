@@ -1,9 +1,6 @@
 package com.bubbletrouble.game.states.play;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.Action;
-import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.esotericsoftware.kryonet.Server;
 
 public class PlayServerState extends PlayState
@@ -26,10 +23,4 @@ public class PlayServerState extends PlayState
 	{
 	}
 
-	public void makeAction(ActionInfo actionInfo)
-	{
-		Player player = players.get(actionInfo.targetId);
-		Action action = actionInfo.action;
-		action.makeAction(player);
-	}
 }

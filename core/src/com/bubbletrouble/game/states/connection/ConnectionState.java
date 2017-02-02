@@ -24,8 +24,7 @@ public class ConnectionState extends State
 	{
 		try
 		{
-			client.start();
-			client.connect(5000, "localhost", BubbleTroubleGameServer.tcpPort, BubbleTroubleGameServer.udpPort);
+			client.connect(15000, "localhost", BubbleTroubleGameServer.tcpPort, BubbleTroubleGameServer.udpPort);
 		} catch (IOException e)
 		{
 			throw new ConnectionErrorException(e.getMessage());

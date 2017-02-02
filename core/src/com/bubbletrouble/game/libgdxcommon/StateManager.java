@@ -3,6 +3,7 @@ package com.bubbletrouble.game.libgdxcommon;
 import java.util.Stack;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.states.play.PlayState;
 
 public class StateManager
 {
@@ -42,6 +43,16 @@ public class StateManager
 	public boolean empty()
 	{
 		return states.empty();
+	}
+
+	public PlayState findPlayState()
+	{
+		PlayState playState = null;
+		for (State state : states)
+			if (state instanceof PlayState)
+				return (PlayState) state;
+
+		return playState;
 	}
 
 }

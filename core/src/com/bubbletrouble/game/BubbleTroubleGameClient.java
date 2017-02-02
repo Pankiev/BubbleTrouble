@@ -9,9 +9,14 @@ import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
+import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
+import com.bubbletrouble.game.server.packets.PlayerInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
+import com.bubbletrouble.game.states.play.PlayState;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 
 public class BubbleTroubleGameClient extends ApplicationAdapter
 {
@@ -27,6 +32,8 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		assets = new Assets();
 		states = new StateManager();
 		client = new Client();
+		client.start();
+		client.addListener(new ClientListener());
 		PacketsRegisterer.registerAllAnnotated(client.getKryo());
 		states.push(new ConnectionState(client));
 	}
@@ -78,6 +85,54 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	{
 		batch.dispose();
 		assets.dispose();
+	}
+
+	private PlayState findPlayState()
+	{
+		return states.findPlayState();
+	}
+
+	private void actionRecieved(ActionInfo object)
+	{
+		PlayState playState = findPlayState();
+		if (playState != null)
+			playState.makeAction(object);
+	}
+
+	private class ClientListener extends Listener
+	{
+		@Override
+		public void received(Connection connection, Object object)
+		{
+			if (object instanceof PlayerInfo[])
+			{
+				PlayerInfo[] playerInfo = (PlayerInfo[]) object;
+				PlayState playState = findPlayState();
+				while (playState == null)
+				{
+					try
+					{
+						Thread.sleep(10);
+					} catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					playState = findPlayState();
+				}
+				playState.addPlayers(playerInfo);
+			} 
+			else if (object instanceof PlayerInfo)
+			{
+				PlayerInfo playerInfo = (PlayerInfo) object;
+				PlayState playState = findPlayState();
+				if (playState != null)
+					playState.addPlayer(playerInfo);
+			} 
+			else if (object instanceof ActionInfo)
+				actionRecieved((ActionInfo) object);
+		}
+
 	}
 
 	private class BadInputHandlerException extends GameException

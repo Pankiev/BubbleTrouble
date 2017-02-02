@@ -1,6 +1,7 @@
 package com.bubbletrouble.game.states.play;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.server.packets.PlayerInfo;
 import com.esotericsoftware.kryonet.Client;
 
 public class PlayClientState extends PlayState
@@ -10,7 +11,7 @@ public class PlayClientState extends PlayState
 	public PlayClientState(Client client)
 	{
 		this.client = client;
-		addPlayer(client.getID());
+		addPlayer(new PlayerInfo(client.getID()));
 		inputHandler = new PlayInputHandler(this);
 		activateInputHandler();
 	}

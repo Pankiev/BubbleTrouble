@@ -7,6 +7,7 @@ import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
+import com.bubbletrouble.game.server.packets.PlayerInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -69,9 +70,10 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		playState.update();
 	}
 
-	private void actionRecieved(ActionInfo actionInfo)
+	private void actionRecieved(ActionInfo actionInfo, Connection source)
 	{
 		playState.makeAction(actionInfo);
+		server.sendToAllExceptTCP(source.getID(), actionInfo);
 	}
 
 	private class ServerListener extends Listener
@@ -79,13 +81,17 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		@Override
 		public void connected(Connection connection)
 		{
-			playState.addPlayer(connection.getID());
+			Integer id = connection.getID();
+			server.sendToTCP(id, playState.getPlayersInfo());
+			server.sendToAllExceptTCP(id, new PlayerInfo(id));
+			playState.addPlayer(new PlayerInfo(connection.getID()));
 			Log.info(">> Player added " + connection.getID());
 		}
 
 		@Override
 		public void disconnected(Connection connection)
 		{
+			server.sendToAllExceptTCP(connection.getID(), "Player remove, not implemented yet");
 			playState.removePlayer(connection.getID());
 			Log.info(">> Player removed " + connection.getID());
 		}
@@ -94,7 +100,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		public void received(Connection connection, Object object)
 		{
 			if (object instanceof ActionInfo)
-				actionRecieved((ActionInfo) object);
+				actionRecieved((ActionInfo) object, connection);
 			// Log.info("action received : " + object);
 		}
 	}
