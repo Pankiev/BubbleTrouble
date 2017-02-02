@@ -68,10 +68,7 @@ public abstract class PlayState extends State
 
 	private int countPlayers()
 	{
-		int size = 0;
-		for (Player player : players.values())
-			size++;
-		return size;
+		return players.values().size();
 	}
 
 	public void addPlayers(PlayerInfo[] ids)

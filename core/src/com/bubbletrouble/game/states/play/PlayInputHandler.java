@@ -2,7 +2,6 @@ package com.bubbletrouble.game.states.play;
 
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.KeyHandler;
-import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.Action;
 import com.bubbletrouble.game.server.packets.ActionInfo;
 import com.bubbletrouble.game.states.play.actions.MoveDownAction;
@@ -38,10 +37,6 @@ public class PlayInputHandler extends InputProcessorAdapter
 		public void handle()
 		{
 			sendAction(new MoveRightAction());
-			int id = client().getID();
-			PlayState playState = PlayInputHandler.this.playState;
-			Player player = playState.getPlayer(id);
-			player.moveRight();
 		}
 	}
 
@@ -50,7 +45,6 @@ public class PlayInputHandler extends InputProcessorAdapter
 		public void handle()
 		{
 			sendAction(new MoveLeftAction());
-			playState.players.get(client().getID()).moveLeft();
 		}
 	}
 
@@ -59,7 +53,6 @@ public class PlayInputHandler extends InputProcessorAdapter
 		public void handle()
 		{
 			sendAction(new MoveUpAction());
-			playState.players.get(client().getID()).moveUp();
 		}
 	}
 
@@ -68,7 +61,6 @@ public class PlayInputHandler extends InputProcessorAdapter
 		public void handle()
 		{
 			sendAction(new MoveDownAction());
-			playState.players.get(client().getID()).moveDown();
 		}
 	}
 }

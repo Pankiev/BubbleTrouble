@@ -6,6 +6,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.Info;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.server.packets.PlayerInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
@@ -40,6 +41,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		Kryo kryo = server.getKryo();
 		PacketsRegisterer.registerAllAnnotated(kryo);
+		PacketsRegisterer.registerAllSubtypes(kryo, Info.class);
 	}
 
 	private void tryBindingServer()
@@ -73,7 +75,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private void actionRecieved(ActionInfo actionInfo, Connection source)
 	{
 		playState.makeAction(actionInfo);
-		server.sendToAllExceptTCP(source.getID(), actionInfo);
+		server.sendToAllTCP(actionInfo);
 	}
 
 	private class ServerListener extends Listener

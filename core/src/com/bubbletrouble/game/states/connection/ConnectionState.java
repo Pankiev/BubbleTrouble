@@ -46,13 +46,7 @@ public class ConnectionState extends State
 
 	private class ConnectionErrorException extends GameException
 	{
-
-		protected ConnectionErrorException()
-		{
-			super("Cannot connect to server");
-		}
-
-		protected ConnectionErrorException(String message)
+		public ConnectionErrorException(String message)
 		{
 			super("Cannot connect to server : " + message);
 		}

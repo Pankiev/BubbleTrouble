@@ -10,13 +10,17 @@ import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.Info;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.server.packets.PlayerInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.play.PlayState;
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+
+import utils.Sleeper;
 
 public class BubbleTroubleGameClient extends ApplicationAdapter
 {
@@ -34,8 +38,15 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		client = new Client();
 		client.start();
 		client.addListener(new ClientListener());
-		PacketsRegisterer.registerAllAnnotated(client.getKryo());
+		registerPackets();
 		states.push(new ConnectionState(client));
+	}
+
+	private void registerPackets()
+	{
+		Kryo kryo = client.getKryo();
+		PacketsRegisterer.registerAllAnnotated(kryo);
+		PacketsRegisterer.registerAllSubtypes(kryo, Info.class);
 	}
 
 	@Override
@@ -110,14 +121,7 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				PlayState playState = findPlayState();
 				while (playState == null)
 				{
-					try
-					{
-						Thread.sleep(10);
-					} catch (InterruptedException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					Sleeper.sleep(10);
 					playState = findPlayState();
 				}
 				playState.addPlayers(playerInfo);

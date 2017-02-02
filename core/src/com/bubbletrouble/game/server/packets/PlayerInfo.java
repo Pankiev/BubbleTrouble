@@ -1,7 +1,7 @@
 package com.bubbletrouble.game.server.packets;
 
-@Registerable
-public class PlayerInfo
+//@Registerable
+public class PlayerInfo extends Info
 {
 	public PlayerInfo()
 	{

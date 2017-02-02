@@ -41,24 +41,15 @@ public class PacketsRegisterer
 	{
 		Reflections reflections = new Reflections(sourcePackageName);
 		Set<Class<?>> registerableTypes = reflections.getTypesAnnotatedWith(annotationType);
-		List<Class<?>> sorted = sort(registerableTypes);
+		registerCollection(destination, registerableTypes);
+		return destination;
+	}
+
+	private static Kryo registerCollection(Kryo destination, Set<Class<?>> types)
+	{
+		List<Class<?>> sorted = sort(types);
 		for (Class<?> registerableType : sorted)
 			destination = registerType(destination, registerableType);
-		destination = registerDefaultClasses(destination);
-		return destination;
-	}
-
-	private static Kryo registerType(Kryo destination, Class<?> registerableType)
-	{
-		destination.register(registerableType);
-		Class<?> arrayClass = Array.newInstance(registerableType, 0).getClass();
-		destination.register(arrayClass);
-		return destination;
-	}
-
-	private static Kryo registerDefaultClasses(Kryo destination)
-	{
-		destination = registerType(destination, Integer.class);
 		return destination;
 	}
 
@@ -76,4 +67,35 @@ public class PacketsRegisterer
 		});
 		return sorted;
 	}
+
+	private static Kryo registerType(Kryo destination, Class<?> registerableType)
+	{
+		destination.register(registerableType);
+		destination = registerArrayType(destination, registerableType);
+		return destination;
+	}
+
+	private static Kryo registerArrayType(Kryo destination, Class<?> registerableType)
+	{
+		Class<?> arrayClass = Array.newInstance(registerableType, 0).getClass();
+		destination.register(arrayClass);
+		return destination;
+	}
+
+	public static <T> Kryo registerAllSubtypes(Kryo destination, Class<T> baseType)
+	{
+		String packageStr = getUsedPackageName();
+		destination = registerAllSubtypes(destination, baseType, packageStr);
+		return destination;
+	}
+
+	public static <T> Kryo registerAllSubtypes(Kryo destination, Class<T> baseType, String sourcePackageName)
+	{
+		Reflections reflections = new Reflections(sourcePackageName);
+		Set<Class<?>> subtypes = (Set<Class<?>>) (Set<?>) reflections.getSubTypesOf(baseType);
+		registerCollection(destination, subtypes);
+		return destination;
+	}
+
+
 }
