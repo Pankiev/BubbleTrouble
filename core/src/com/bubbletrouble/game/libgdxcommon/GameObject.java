@@ -12,7 +12,8 @@ import com.bubbletrouble.game.server.packets.InfoProcucable;
 
 public abstract class GameObject extends Actor implements InfoProcucable
 {
-	Sprite sprite;
+	private Sprite sprite;
+	private int id;
 
 	protected GameObject(Texture lookout)
 	{
@@ -181,5 +182,15 @@ public abstract class GameObject extends Actor implements InfoProcucable
 	protected Sprite getSprite()
 	{
 		return sprite;
+	}
+
+	public int getId()
+	{
+		return id;
+	}
+
+	public void setId(int id)
+	{
+		this.id = id;
 	}
 }

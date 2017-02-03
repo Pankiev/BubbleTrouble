@@ -42,6 +42,7 @@ public class Player extends MovableGameObject
 		PlayerAddInfo info = new PlayerAddInfo();
 		info.x = getX();
 		info.y = getY();
+		info.id = getId();
 		return info;
 	}
 

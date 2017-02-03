@@ -25,6 +25,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private Server server;
 	private PlayServerState playState;
+	private int nextObjectId = Integer.MIN_VALUE;
 
 	@Override
 	public void create()
@@ -91,8 +92,15 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		ObstacleAddInfo addObstacle = new ObstacleAddInfo();
 		addObstacle.x = new Random().nextInt(400);
 		addObstacle.y = new Random().nextInt(400);
+		addObstacle.id = getNextId();
 		server.sendToAllTCP(addObstacle);
 		playState.addObject(addObstacle);
+	}
+
+	private int getNextId()
+	{
+		nextObjectId++;
+		return nextObjectId;
 	}
 
 	private void userDisconnected(Connection connection)
@@ -107,7 +115,6 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		playState.makeAction(actionInfo);
 		server.sendToAllTCP(actionInfo);
-		addRandomObstacle();
 	}
 
 	private class ServerListener extends Listener

@@ -34,6 +34,7 @@ public class Obstacle extends GameObject
 		ObstacleAddInfo info = new ObstacleAddInfo();
 		info.x = getX();
 		info.y = getY();
+		info.id = getId();
 		return info;
 	}
 
