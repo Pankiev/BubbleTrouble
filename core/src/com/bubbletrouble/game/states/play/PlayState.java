@@ -1,14 +1,16 @@
 package com.bubbletrouble.game.states.play;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.Action;
-import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.ProduceInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.esotericsoftware.minlog.Log;
@@ -16,37 +18,44 @@ import com.esotericsoftware.minlog.Log;
 public abstract class PlayState extends State
 {
 	Map<Integer, Player> players = new TreeMap<>();
+	List<GameObject> gameObjects = new ArrayList<>();
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		for (Player player : players.values())
+		for (GameObject player : gameObjects)
 			player.render(batch);
 	}
 
 	@Override
 	public void update()
 	{
-		for (Player player : players.values())
+		for (GameObject player : gameObjects)
 			player.update();
 	}
 
 	public void addPlayer(PlayerAddInfo info)
 	{
-		Player newPlayer = new Player();
-		newPlayer.setX(info.x);
-		newPlayer.setY(info.y);
+		Player newPlayer = (Player) info.produce();
 		players.put(info.id, newPlayer);
+		gameObjects.add(newPlayer);
 	}
 
 	public void removePlayer(PlayerRemoveInfo playerInfo)
 	{
+		Player player = players.get(playerInfo.id);
 		players.remove(playerInfo.id);
+		gameObjects.remove(player);
 	}
 
 	public Player getPlayer(int id)
 	{
 		return players.get(id);
+	}
+
+	public void addObject(GameObject gameObject)
+	{
+		gameObjects.add(gameObject);
 	}
 
 	public PlayerAddInfo[] getPlayersInfo()
@@ -72,6 +81,12 @@ public abstract class PlayState extends State
 		return players.values().size();
 	}
 
+	public void addObject(ProduceInfo info)
+	{
+		GameObject object = info.produce();
+		gameObjects.add(object);
+	}
+
 	public void addPlayers(PlayerAddInfo[] ids)
 	{
 		for (PlayerAddInfo playerInfo : ids)
@@ -81,10 +96,18 @@ public abstract class PlayState extends State
 		}
 	}
 
-	public void makeAction(ActionInfo actionInfo)
+	public ProduceInfo[] getGameObjectsWithoutPlayersInfo()
 	{
-		Player player = players.get(actionInfo.targetId);
-		Action action = actionInfo.action;
-		action.makeAction(player);
+		ProduceInfo[] info = new ProduceInfo[gameObjects.size() - players.size()];
+		int i = 0;
+		for (GameObject gameObject : gameObjects)
+		{
+			if (!(gameObject instanceof Player))
+			{
+				info[i] = gameObject.produceInfo();
+				i++;
+			}
+		}
+		return info;
 	}
 }

@@ -1,14 +1,15 @@
 package com.bubbletrouble.game;
 
 import java.io.IOException;
+import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerPositionUpdateInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
@@ -42,6 +43,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		Kryo kryo = server.getKryo();
 		PacketsRegisterer.registerAllAnnotated(kryo);
+		PacketsRegisterer.registerDefaults(kryo);
 	}
 
 	private void tryBindingServer()
@@ -76,9 +78,21 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		Integer id = connection.getID();
 		server.sendToTCP(id, playState.getPlayersInfo());
+		server.sendToTCP(id, playState.getGameObjectsWithoutPlayersInfo());
 		server.sendToAllExceptTCP(id, new PlayerAddInfo(id));
 		playState.addPlayer(new PlayerAddInfo(connection.getID()));
 		Log.info(">> Player added " + connection.getID());
+
+		addRandomObstacle();
+	}
+
+	private void addRandomObstacle()
+	{
+		ObstacleAddInfo addObstacle = new ObstacleAddInfo();
+		addObstacle.x = new Random().nextInt(400);
+		addObstacle.y = new Random().nextInt(400);
+		server.sendToAllTCP(addObstacle);
+		playState.addObject(addObstacle);
 	}
 
 	private void userDisconnected(Connection connection)
@@ -91,10 +105,9 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private void actionRecieved(ActionInfo actionInfo, Connection source)
 	{
-		// playState.makeAction(actionInfo);
-		// server.sendToAllTCP(actionInfo);
-		PlayerPositionUpdateInfo updateInfo = playState.makeActionAndGetDifference(actionInfo);
-		server.sendToAllTCP(updateInfo);
+		playState.makeAction(actionInfo);
+		server.sendToAllTCP(actionInfo);
+		addRandomObstacle();
 	}
 
 	private class ServerListener extends Listener

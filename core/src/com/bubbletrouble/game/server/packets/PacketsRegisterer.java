@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 
 public class PacketsRegisterer
@@ -105,6 +106,12 @@ public class PacketsRegisterer
 		Reflections reflections = new Reflections(sourcePackageName);
 		Set<Class<?>> subtypes = (Set<Class<?>>) (Set<?>) reflections.getSubTypesOf(baseType);
 		registerCollection(destination, subtypes);
+		return destination;
+	}
+
+	public static Kryo registerDefaults(Kryo destination)
+	{
+		destination = registerType(destination, Vector2.class);
 		return destination;
 	}
 

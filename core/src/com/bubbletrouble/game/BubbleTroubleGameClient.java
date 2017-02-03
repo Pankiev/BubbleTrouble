@@ -2,17 +2,16 @@ package com.bubbletrouble.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
-import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
+import com.bubbletrouble.game.server.packets.ProduceInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerPositionUpdateInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.play.PlayClientState;
@@ -20,6 +19,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.minlog.Log;
 
 import utils.Sleeper;
 
@@ -47,6 +47,7 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 	{
 		Kryo kryo = client.getKryo();
 		PacketsRegisterer.registerAllAnnotated(kryo);
+		PacketsRegisterer.registerDefaults(kryo);
 	}
 
 	@Override
@@ -59,28 +60,7 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 
 	private void update()
 	{
-		handleInput();
 		states.update();
-	}
-
-
-	/*
-	 * private boolean isStateToHandle() { return !states.empty(); }
-	 */
-
-	private void handleInput()
-	{
-		InputProcessorAdapter inputHandler = getInputProcessor();
-		if (inputHandler != null)
-			inputHandler.process();
-	}
-
-	private InputProcessorAdapter getInputProcessor()
-	{
-		InputProcessor inputHandler = Gdx.input.getInputProcessor();
-		if (inputHandler != null && !(inputHandler instanceof InputProcessorAdapter))
-			throw new BadInputHandlerException(inputHandler.getClass());
-		return (InputProcessorAdapter) inputHandler;
 	}
 
 	private void clearScreen()
@@ -108,11 +88,11 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		return states.findPlayState();
 	}
 
-	private void actionRecieved(ActionInfo object)
+	private void actionRecieved(ActionInfo actionInfo)
 	{
 		PlayClientState playState = findPlayState();
 		if (playState != null)
-			playState.makeAction(object);
+			playState.applyChanges(actionInfo);
 	}
 
 	private class ClientListener extends Listener
@@ -142,13 +122,23 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				PlayerRemoveInfo playerInfo = (PlayerRemoveInfo) object;
 				playState.removePlayer(playerInfo);
 			}
-			// else if (object instanceof ActionInfo)
-			// actionRecieved((ActionInfo) object);
-			else if (object instanceof PlayerPositionUpdateInfo)
+			else if (object instanceof ObstacleAddInfo)
 			{
-				PlayerPositionUpdateInfo updateInfo = (PlayerPositionUpdateInfo) object;
-				playState.update(updateInfo);
+				playState.addObstacle((ObstacleAddInfo) object);
+				Log.info("Obstacle added");
 			}
+			else if(object instanceof ProduceInfo)
+			{
+				ProduceInfo produceInfo = (ProduceInfo) object;
+				playState.addObject(produceInfo);
+			}
+			else if(object instanceof ProduceInfo[])
+			{
+				ProduceInfo[] produceInfo = (ProduceInfo[]) object;
+				playState.addObjects(produceInfo);
+			}
+			else if (object instanceof ActionInfo)
+				actionRecieved((ActionInfo) object);
 		}
 
 	}
