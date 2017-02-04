@@ -10,7 +10,7 @@ import com.bubbletrouble.game.server.packets.ProduceInfo;
 
 public abstract class PlayState extends State
 {
-	Map<Long, GameObject> gameObjects = new TreeMap<>();
+	Map<Long, GameObject> gameObjects = new TreeMap<Long, GameObject>();
 
 	@Override
 	public void render(SpriteBatch batch)

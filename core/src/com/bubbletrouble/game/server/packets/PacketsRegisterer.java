@@ -67,7 +67,7 @@ public class PacketsRegisterer
 
 	private static List<Class<?>> sort(Set<Class<?>> registerableTypes)
 	{
-		List<Class<?>> sorted = new ArrayList<>(registerableTypes);
+		List<Class<?>> sorted = new ArrayList<Class<?>>(registerableTypes);
 		Collections.sort(sorted, new Comparator<Class<?>>()
 		{
 			public int compare(Class<?> o1, Class<?> o2)

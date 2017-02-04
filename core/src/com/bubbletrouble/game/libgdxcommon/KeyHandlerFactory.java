@@ -1,7 +1,6 @@
 package com.bubbletrouble.game.libgdxcommon;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import com.badlogic.gdx.Input.Keys;
@@ -51,8 +50,7 @@ public class KeyHandlerFactory
 			KeyHandler actualKeyHandler = (KeyHandler) keyHandlerConstructor.newInstance(new Object[] { inputHandler });
 			return actualKeyHandler;
 
-		} catch (InstantiationException | IllegalAccessException | SecurityException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException e)
+		} catch (Exception e)
 		{
 			throw new CannotCreateKeyHandlerException(e.getMessage());
 		}

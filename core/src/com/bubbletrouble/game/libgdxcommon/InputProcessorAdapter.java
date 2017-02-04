@@ -10,7 +10,7 @@ import com.badlogic.gdx.InputProcessor;
 public class InputProcessorAdapter implements InputProcessor
 {
 	private Map<String, KeyHandler> keyHandlers;
-	protected Map<Integer, KeyHandler> keyHandlersToActivate = new HashMap<>();
+	protected Map<Integer, KeyHandler> keyHandlersToActivate = new HashMap<Integer, KeyHandler>();
 
 	public InputProcessorAdapter()
 	{
