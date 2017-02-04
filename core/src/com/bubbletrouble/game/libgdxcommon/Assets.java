@@ -1,5 +1,6 @@
 package com.bubbletrouble.game.libgdxcommon;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Assets
 {
-	private final String assetsPath = "assets";
+	private String assetsPath = "assets";
 	private Map<String, Class<?>> classTypes = new HashMap<String, Class<?>>();
 	private AssetManager assets = new AssetManager();
 

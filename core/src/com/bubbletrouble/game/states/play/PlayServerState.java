@@ -1,5 +1,6 @@
 package com.bubbletrouble.game.states.play;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.server.packets.Action;
@@ -8,9 +9,15 @@ import com.bubbletrouble.game.server.packets.CollisionAction;
 import com.bubbletrouble.game.server.packets.CollisionActionInfo;
 import com.esotericsoftware.kryonet.Server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayServerState extends PlayState
 {
 	Server server;
+	BitmapFont font = new BitmapFont();
+	List<String> messages = new ArrayList<String>();
+	private float y = 20;
 
 	public PlayServerState(Server server)
 	{
@@ -26,6 +33,12 @@ public class PlayServerState extends PlayState
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		y = 20;
+		for (String message : messages) {
+			font.draw(batch, message, 20, y);
+			y+= 20;
+		}
+
 	}
 
 	public void makeAction(ActionInfo actionInfo)
@@ -42,4 +55,9 @@ public class PlayServerState extends PlayState
 		action.makeAction(object, gameObjects.values());
 	}
 
+
+	public void addMessage(String message)
+    {
+		messages.add(message);
+	}
 }

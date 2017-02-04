@@ -13,6 +13,8 @@ import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
+import utils.Sleeper;
+
 public class ConnectionState extends State implements TextInputListener
 {
 	private Client client;
@@ -20,6 +22,7 @@ public class ConnectionState extends State implements TextInputListener
 	private static final float timeout = 10.0f;
 	float connectingTime = 0.0f;
 	String messageToUser = "";
+    boolean isConnecting = false;
 
 	public ConnectionState(Client client)
 	{
@@ -38,6 +41,7 @@ public class ConnectionState extends State implements TextInputListener
 		messageToUser = "Connecting";
 		try
 		{
+            isConnecting = true;
 			connect(connectionIp);
 		} catch (IOException e)
 		{
@@ -52,15 +56,19 @@ public class ConnectionState extends State implements TextInputListener
 
 	private void connectionFailed(String connectionIp)
 	{
+        Sleeper.sleep(1000);
+        connectingTime += Gdx.graphics.getDeltaTime() * 100;
 		if (connectingTime >= timeout)
 			onConnectionTimeout();
-		else
-			tryConnecting(connectionIp);
+        else
+            tryConnecting(connectionIp);
 	}
 
 	private void onConnectionTimeout()
 	{
 		messageToUser = "Couldn't connect, please check ip adress";
+		connectingTime = 0.0f;
+        isConnecting = false;
 		askForIp();
 	}
 
@@ -75,7 +83,8 @@ public class ConnectionState extends State implements TextInputListener
 	{
 		if (client.isConnected())
 			BubbleTroubleGameClient.states.set(new PlayClientState(client));
-		connectingTime += Gdx.graphics.getDeltaTime();
+        if(isConnecting)
+            connectingTime += Gdx.graphics.getDeltaTime();
 	}
 
 

@@ -14,7 +14,8 @@ public class Player extends MovableGameObject
 
 	public Player(long id)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("blue.gif"));
+		//super((Texture) BubbleTroubleGameClient.assets.get("blue.gif"));
+		super(new Texture("blue.gif"));
 		setId(id);
 	}
 

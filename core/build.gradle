@@ -9,3 +9,8 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 eclipse.project {
     name = appName + "-core"
 }
+
+dependencies{
+    compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+}

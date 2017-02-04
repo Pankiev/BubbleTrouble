@@ -12,7 +12,8 @@ public class Obstacle extends GameObject
 
 	public Obstacle(long id)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("red.gif"));
+		//super((Texture) BubbleTroubleGameClient.assets.get("red.gif"));
+		super(new Texture("red.gif"));
 		setId(id);
 	}
 

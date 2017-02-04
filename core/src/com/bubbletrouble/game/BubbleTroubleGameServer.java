@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
@@ -28,9 +32,11 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private PlayServerState playState;
 	private long nextObjectId = (long) Integer.MAX_VALUE + 1;
 
+	SpriteBatch batch;
 	@Override
 	public void create()
 	{
+		batch = new SpriteBatch();
 		BubbleTroubleGameClient.assets = new Assets();
 		BubbleTroubleGameClient.assets.loadAll();
 		server = new Server();
@@ -68,6 +74,11 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	@Override
 	public void render()
 	{
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		playState.render(batch);
+		batch.end();
 		update();
 	}
 
@@ -83,6 +94,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		server.sendToAllExceptTCP(id, new PlayerProduceInfo(id));
 		playState.addObject(new PlayerProduceInfo(id));
 		Log.info(">> Player added " + connection.getID());
+		playState.addMessage(">> Player added " + connection.getID());
 
 		addRandomObstacle();
 	}
@@ -112,6 +124,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		server.sendToAllExceptTCP(connection.getID(), removePlayer);
 		playState.removeObject(removePlayer.id);
 		Log.info(">> Player removed " + connection.getID());
+		playState.addMessage(">> Player removed " + connection.getID());
 	}
 
 	private void actionRecieved(ActionInfo actionInfo, Connection source)
