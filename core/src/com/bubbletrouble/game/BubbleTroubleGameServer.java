@@ -7,9 +7,10 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.CollisionActionInfo;
 import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerProduceInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
@@ -79,8 +80,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		Integer id = connection.getID();
 		server.sendToTCP(id, playState.getGameObjects());
-		server.sendToAllExceptTCP(id, new PlayerAddInfo(id));
-		playState.addObject(new PlayerAddInfo(id));
+		server.sendToAllExceptTCP(id, new PlayerProduceInfo(id));
+		playState.addObject(new PlayerProduceInfo(id));
 		Log.info(">> Player added " + connection.getID());
 
 		addRandomObstacle();
@@ -119,6 +120,12 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		server.sendToAllTCP(actionInfo);
 	}
 
+	private void actionRecieved(CollisionActionInfo actionInfo, Connection source)
+	{
+		playState.makeAction(actionInfo);
+		server.sendToAllTCP(actionInfo);
+	}
+
 	private class ServerListener extends Listener
 	{
 		@Override
@@ -138,6 +145,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		{
 			if (object instanceof ActionInfo)
 				actionRecieved((ActionInfo) object, connection);
+			else if (object instanceof CollisionActionInfo)
+				actionRecieved((CollisionActionInfo) object, connection);
 		}
 	}
 

@@ -27,6 +27,7 @@ public class Assets
 		classTypes.put("png", Texture.class);
 		classTypes.put("jpg", Texture.class);
 		classTypes.put("bmp", Texture.class);
+		classTypes.put("gif", Texture.class);
 		classTypes.put("mp3", Music.class);
 		classTypes.put("ogg", Sound.class);
 	}

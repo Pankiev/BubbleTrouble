@@ -7,9 +7,11 @@ import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.objects.Obstacle;
 import com.bubbletrouble.game.server.packets.Action;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.CollisionAction;
+import com.bubbletrouble.game.server.packets.CollisionActionInfo;
 import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.ProduceInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerProduceInfo;
 import com.bubbletrouble.game.states.play.actions.UpdateAngleAction;
 import com.esotericsoftware.kryonet.Client;
 
@@ -20,7 +22,7 @@ public class PlayClientState extends PlayState
 	public PlayClientState(Client client)
 	{
 		this.client = client;
-		addObject(new PlayerAddInfo(client.getID()));
+		addObject(new PlayerProduceInfo(client.getID()));
 		inputHandler = new PlayInputHandler(this);
 		activateInputHandler();
 	}
@@ -48,10 +50,12 @@ public class PlayClientState extends PlayState
 		client.sendTCP(actionInfo);
 	}
 
-	public void applyChanges(ActionInfo actionInfo)
+	public void sendAction(CollisionAction action, long id)
 	{
-		GameObject object = getObject(actionInfo.targetId);
-		actionInfo.action.applyChangesToOther(object);
+		CollisionActionInfo actionInfo = new CollisionActionInfo();
+		actionInfo.targetId = id;
+		actionInfo.action = action;
+		client.sendTCP(actionInfo);
 	}
 
 	public void addObstacle(ObstacleAddInfo obstacleAddInfo)
@@ -65,5 +69,17 @@ public class PlayClientState extends PlayState
 	{
 		for (ProduceInfo produceInfo : produceInfos)
 			addObject(produceInfo);
+	}
+
+	public void applyChanges(ActionInfo actionInfo)
+	{
+		GameObject object = getObject(actionInfo.targetId);
+		actionInfo.action.applyChangesToOther(object);
+	}
+
+	public void applyChanges(CollisionActionInfo actionInfo)
+	{
+		GameObject object = getObject(actionInfo.targetId);
+		actionInfo.action.applyChangesToOther(object);
 	}
 }

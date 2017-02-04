@@ -5,13 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
-import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.server.packets.ActionInfo;
+import com.bubbletrouble.game.server.packets.CollisionActionInfo;
 import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.server.packets.ProduceInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerProduceInfo;
 import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.play.PlayClientState;
@@ -95,6 +95,12 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 			playState.applyChanges(actionInfo);
 	}
 
+	private void actionRecieved(CollisionActionInfo actionInfo)
+	{
+		PlayClientState playState = findPlayState();
+		playState.applyChanges(actionInfo);
+	}
+
 	private class ClientListener extends Listener
 	{
 		@Override
@@ -106,16 +112,16 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				Sleeper.sleep(10);
 				playState = findPlayState();
 			}
-			if (object instanceof PlayerAddInfo[])
+			if (object instanceof PlayerProduceInfo[])
 			{
-				PlayerAddInfo[] playerInfo = (PlayerAddInfo[]) object;
+				PlayerProduceInfo[] playerInfo = (PlayerProduceInfo[]) object;
 
 
 				playState.addObjects(playerInfo);
 			} 
-			else if (object instanceof PlayerAddInfo)
+			else if (object instanceof PlayerProduceInfo)
 			{
-				PlayerAddInfo playerInfo = (PlayerAddInfo) object;
+				PlayerProduceInfo playerInfo = (PlayerProduceInfo) object;
 				playState.addObject(playerInfo);
 			} 
 			else if(object instanceof PlayerRemoveInfo)
@@ -140,15 +146,9 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 			}
 			else if (object instanceof ActionInfo)
 				actionRecieved((ActionInfo) object);
+			else if (object instanceof CollisionActionInfo)
+				actionRecieved((CollisionActionInfo) object);
 		}
 
-	}
-
-	private class BadInputHandlerException extends GameException
-	{
-		public BadInputHandlerException(Class<?> badType)
-		{
-			super("An instance of " + badType.getName() + "expected");
-		}
 	}
 }

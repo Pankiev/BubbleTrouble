@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.MovableGameObject;
 import com.bubbletrouble.game.server.packets.ProduceInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
+import com.bubbletrouble.game.server.packets.player.PlayerProduceInfo;
 
 public class Player extends MovableGameObject
 {
@@ -14,7 +14,7 @@ public class Player extends MovableGameObject
 
 	public Player(long id)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("blue.bmp"));
+		super((Texture) BubbleTroubleGameClient.assets.get("blue.gif"));
 		setId(id);
 	}
 
@@ -41,7 +41,7 @@ public class Player extends MovableGameObject
 	@Override
 	public ProduceInfo produceInfo()
 	{
-		PlayerAddInfo info = new PlayerAddInfo();
+		PlayerProduceInfo info = new PlayerProduceInfo();
 		info.x = getX();
 		info.y = getY();
 		info.id = getId();

@@ -104,6 +104,7 @@ public class PacketsRegisterer
 	public static <T> Kryo registerAllSubtypes(Kryo destination, Class<T> baseType, String sourcePackageName)
 	{
 		Reflections reflections = new Reflections(sourcePackageName);
+		@SuppressWarnings("unchecked")
 		Set<Class<?>> subtypes = (Set<Class<?>>) (Set<?>) reflections.getSubTypesOf(baseType);
 		registerCollection(destination, subtypes);
 		return destination;

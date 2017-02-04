@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.BubbleTroubleGameServer;
-import com.bubbletrouble.game.libgdxcommon.GameException;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
@@ -90,14 +89,5 @@ public class ConnectionState extends State implements TextInputListener
 	public void canceled()
 	{
 		BubbleTroubleGameClient.states.pop();
-	}
-
-	private class ConnectionErrorException extends GameException
-	{
-		public ConnectionErrorException(String message)
-		{
-			super("Cannot connect to server : " + message);
-		}
-
 	}
 }

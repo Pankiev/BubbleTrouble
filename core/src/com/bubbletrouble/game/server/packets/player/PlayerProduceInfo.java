@@ -4,21 +4,21 @@ import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.ProduceInfo;
 
-public class PlayerAddInfo extends ProduceInfo
+public class PlayerProduceInfo extends ProduceInfo
 {
-	public PlayerAddInfo()
+	public PlayerProduceInfo()
 	{
 
 	}
 
-	public PlayerAddInfo(int id)
+	public PlayerProduceInfo(int id)
 	{
 		this.id = id;
 	}
 
 	public float x = 0;
 	public float y = 0;
-
+	
 	@Override
 	public GameObject produce()
 	{
