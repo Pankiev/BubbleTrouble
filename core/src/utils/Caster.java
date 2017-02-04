@@ -9,7 +9,7 @@ public class Caster
 	public static Player castToPlayer(GameObject gameObject)
 	{
 		if (!(gameObject instanceof Player))
-			throw new BadTypeException(Player.class.getName());
+			throw new BadTypeException(Player.class.getName(), gameObject.getClass().getName());
 		Player player = (Player) gameObject;
 		return player;
 	}

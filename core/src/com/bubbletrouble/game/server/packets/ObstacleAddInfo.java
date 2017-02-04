@@ -11,7 +11,7 @@ public class ObstacleAddInfo extends ProduceInfo
 	@Override
 	public GameObject produce()
 	{
-		Obstacle obstacle = new Obstacle();
+		Obstacle obstacle = new Obstacle(id);
 		obstacle.setPosition(x, y);
 		return obstacle;
 	}

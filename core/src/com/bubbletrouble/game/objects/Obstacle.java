@@ -10,9 +10,10 @@ import com.bubbletrouble.game.server.packets.ProduceInfo;
 public class Obstacle extends GameObject
 {
 
-	public Obstacle()
+	public Obstacle(long id)
 	{
 		super((Texture) BubbleTroubleGameClient.assets.get("red.bmp"));
+		setId(id);
 	}
 
 	@Override

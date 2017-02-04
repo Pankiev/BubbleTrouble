@@ -28,9 +28,9 @@ public class PlayServerState extends PlayState
 
 	public void makeAction(ActionInfo actionInfo)
 	{
-		GameObject player = players.get(actionInfo.targetId);
+		GameObject object = gameObjects.get(actionInfo.targetId);
 		Action action = actionInfo.action;
-		action.makeAction(player);
+		action.makeAction(object);
 	}
 
 }

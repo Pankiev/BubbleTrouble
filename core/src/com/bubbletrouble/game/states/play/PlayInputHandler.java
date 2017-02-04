@@ -16,11 +16,16 @@ public class PlayInputHandler extends InputProcessorAdapter
 		this.playState = playState;
 	}
 
+	private long getPlayerId()
+	{
+		return playState.client.getID();
+	}
+
 	public class RightKeyHandler implements KeyHandler
 	{
 		public void handle()
 		{
-			playState.sendAction(new MoveRightAction());
+			playState.sendAction(new MoveRightAction(), getPlayerId());
 		}
 	}
 
@@ -28,7 +33,7 @@ public class PlayInputHandler extends InputProcessorAdapter
 	{
 		public void handle()
 		{
-			playState.sendAction(new MoveLeftAction());
+			playState.sendAction(new MoveLeftAction(), getPlayerId());
 		}
 	}
 
@@ -36,7 +41,7 @@ public class PlayInputHandler extends InputProcessorAdapter
 	{
 		public void handle()
 		{
-			playState.sendAction(new MoveUpAction());
+			playState.sendAction(new MoveUpAction(), getPlayerId());
 		}
 	}
 
@@ -44,7 +49,7 @@ public class PlayInputHandler extends InputProcessorAdapter
 	{
 		public void handle()
 		{
-			playState.sendAction(new MoveDownAction());
+			playState.sendAction(new MoveDownAction(), getPlayerId());
 		}
 	}
 }

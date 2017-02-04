@@ -101,26 +101,27 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		public void received(Connection connection, Object object)
 		{
 			PlayClientState playState = findPlayState();
+			while (playState == null)
+			{
+				Sleeper.sleep(10);
+				playState = findPlayState();
+			}
 			if (object instanceof PlayerAddInfo[])
 			{
 				PlayerAddInfo[] playerInfo = (PlayerAddInfo[]) object;
 
-				while (playState == null)
-				{
-					Sleeper.sleep(10);
-					playState = findPlayState();
-				}
-				playState.addPlayers(playerInfo);
+
+				playState.addObjects(playerInfo);
 			} 
 			else if (object instanceof PlayerAddInfo)
 			{
 				PlayerAddInfo playerInfo = (PlayerAddInfo) object;
-				playState.addPlayer(playerInfo);
+				playState.addObject(playerInfo);
 			} 
 			else if(object instanceof PlayerRemoveInfo)
 			{
 				PlayerRemoveInfo playerInfo = (PlayerRemoveInfo) object;
-				playState.removePlayer(playerInfo);
+				playState.removeObject(playerInfo.id);
 			}
 			else if (object instanceof ObstacleAddInfo)
 			{

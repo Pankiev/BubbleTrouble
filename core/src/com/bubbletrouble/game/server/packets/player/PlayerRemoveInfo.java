@@ -13,5 +13,6 @@ public class PlayerRemoveInfo extends Info
 	{
 		this.id = id;
 	}
-	public int id = -1;
+
+	public long id = -1;
 }

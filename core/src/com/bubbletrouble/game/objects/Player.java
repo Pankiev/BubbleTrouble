@@ -11,9 +11,11 @@ import com.bubbletrouble.game.server.packets.player.PlayerAddInfo;
 public class Player extends MovableGameObject
 {
 	Vector2 center = new Vector2();
-	public Player()
+
+	public Player(long id)
 	{
 		super((Texture) BubbleTroubleGameClient.assets.get("blue.bmp"));
+		setId(id);
 	}
 
 	@Override

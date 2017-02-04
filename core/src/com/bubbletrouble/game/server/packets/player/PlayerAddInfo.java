@@ -18,12 +18,11 @@ public class PlayerAddInfo extends ProduceInfo
 
 	public float x = 0;
 	public float y = 0;
-	public int id = -1;
 
 	@Override
 	public GameObject produce()
 	{
-		Player player = new Player();
+		Player player = new Player(id);
 		player.setPosition(x, y);
 		return player;
 	}

@@ -25,7 +25,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private Server server;
 	private PlayServerState playState;
-	private int nextObjectId = Integer.MIN_VALUE;
+	private long nextObjectId = (long) Integer.MAX_VALUE + 1;
 
 	@Override
 	public void create()
@@ -78,10 +78,9 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private void userConnected(Connection connection)
 	{
 		Integer id = connection.getID();
-		server.sendToTCP(id, playState.getPlayersInfo());
-		server.sendToTCP(id, playState.getGameObjectsWithoutPlayersInfo());
+		server.sendToTCP(id, playState.getGameObjects());
 		server.sendToAllExceptTCP(id, new PlayerAddInfo(id));
-		playState.addPlayer(new PlayerAddInfo(connection.getID()));
+		playState.addObject(new PlayerAddInfo(id));
 		Log.info(">> Player added " + connection.getID());
 
 		addRandomObstacle();
@@ -90,24 +89,27 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private void addRandomObstacle()
 	{
 		ObstacleAddInfo addObstacle = new ObstacleAddInfo();
-		addObstacle.x = new Random().nextInt(400);
-		addObstacle.y = new Random().nextInt(400);
+		addObstacle.x = new Random().nextInt(500);
+		addObstacle.y = new Random().nextInt(500);
 		addObstacle.id = getNextId();
 		server.sendToAllTCP(addObstacle);
 		playState.addObject(addObstacle);
 	}
 
-	private int getNextId()
+	private long getNextId()
 	{
+		if (nextObjectId < 0)
+			nextObjectId = Integer.MAX_VALUE + 1;
 		nextObjectId++;
 		return nextObjectId;
 	}
 
 	private void userDisconnected(Connection connection)
 	{
-		PlayerRemoveInfo removePlayer = new PlayerRemoveInfo(connection.getID());
+		PlayerRemoveInfo removePlayer = new PlayerRemoveInfo();
+		removePlayer.id = connection.getID();
 		server.sendToAllExceptTCP(connection.getID(), removePlayer);
-		playState.removePlayer(removePlayer);
+		playState.removeObject(removePlayer.id);
 		Log.info(">> Player removed " + connection.getID());
 	}
 
