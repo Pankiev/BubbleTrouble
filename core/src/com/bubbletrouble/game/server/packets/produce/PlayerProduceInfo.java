@@ -1,8 +1,7 @@
-package com.bubbletrouble.game.server.packets.player;
+package com.bubbletrouble.game.server.packets.produce;
 
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.ProduceInfo;
 
 public class PlayerProduceInfo extends ProduceInfo
 {

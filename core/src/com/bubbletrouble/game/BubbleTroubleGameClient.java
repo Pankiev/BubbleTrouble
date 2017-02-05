@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
-import com.bubbletrouble.game.server.packets.ActionInfo;
-import com.bubbletrouble.game.server.packets.CollisionActionInfo;
-import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.ProduceInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerProduceInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
+import com.bubbletrouble.game.server.packets.action.ActionInfo;
+import com.bubbletrouble.game.server.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.server.packets.action.PositionUpdateInfo;
+import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
+import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
+import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.server.packets.remove.ObjectRemoveInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryo.Kryo;
@@ -124,14 +125,14 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				PlayerProduceInfo playerInfo = (PlayerProduceInfo) object;
 				playState.addObject(playerInfo);
 			} 
-			else if(object instanceof PlayerRemoveInfo)
+			else if(object instanceof ObjectRemoveInfo)
 			{
-				PlayerRemoveInfo playerInfo = (PlayerRemoveInfo) object;
+				ObjectRemoveInfo playerInfo = (ObjectRemoveInfo) object;
 				playState.removeObject(playerInfo.id);
 			}
-			else if (object instanceof ObstacleAddInfo)
+			else if (object instanceof ObstacleProduceInfo)
 			{
-				playState.addObstacle((ObstacleAddInfo) object);
+				playState.addObstacle((ObstacleProduceInfo) object);
 				Log.info("Obstacle added");
 			}
 			else if(object instanceof ProduceInfo)
@@ -148,6 +149,11 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				actionRecieved((ActionInfo) object);
 			else if (object instanceof CollisionActionInfo)
 				actionRecieved((CollisionActionInfo) object);
+			else if (object instanceof PositionUpdateInfo)
+			{
+				PositionUpdateInfo produceInfo = (PositionUpdateInfo) object;
+				playState.update(produceInfo);
+			}
 		}
 
 	}

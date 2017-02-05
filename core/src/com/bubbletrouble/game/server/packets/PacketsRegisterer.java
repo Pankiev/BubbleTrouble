@@ -35,13 +35,13 @@ public class PacketsRegisterer
 		// Class<?> thisClassType = new PacketsRegisterer(){}.getClass();
 		// Package currentPackage = thisClassType.getPackage();
 		// return currentPackage.getName();
-		return ".";
+		return "com.bubbletrouble.game";
 	}
 
 	public static Kryo registerAllAnnotated(Kryo destination, Class<? extends Annotation> annotationType,
 			String sourcePackageName)
 	{
-		Reflections reflections = new Reflections();
+		Reflections reflections = new Reflections(sourcePackageName);
 		Set<Class<?>> registerableTypes = reflections.getTypesAnnotatedWith(annotationType);
 		destination = registerCollection(destination, registerableTypes);
 		Set<Class<?>> registerableBaseTypes = reflections.getTypesAnnotatedWith(defaultAnnotationBase);

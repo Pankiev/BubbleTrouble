@@ -10,13 +10,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.bubbletrouble.game.server.packets.InfoProcucable;
+import com.bubbletrouble.game.server.packets.produce.InfoProcucable;
 
 public abstract class GameObject extends Actor implements InfoProcucable
 {
 	private Sprite sprite;
 	private long id;
 	private Circle circle = new Circle();
+	protected boolean needsPositionUpdate = false;
 
 	protected GameObject(Texture lookout)
 	{
@@ -219,5 +220,20 @@ public abstract class GameObject extends Actor implements InfoProcucable
 	public void setId(long id)
 	{
 		this.id = id;
+	}
+
+	public boolean needsPositionUpdate()
+	{
+		return needsPositionUpdate;
+	}
+
+	public void informAboutPositionUpdate()
+	{
+		needsPositionUpdate = false;
+	}
+
+	public boolean shouldBeDeleted()
+	{
+		return false;
 	}
 }

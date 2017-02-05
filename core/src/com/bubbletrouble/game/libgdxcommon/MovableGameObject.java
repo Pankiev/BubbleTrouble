@@ -19,8 +19,17 @@ public abstract class MovableGameObject extends GameObject
 		moveRight();
 		GameObject collision = checkForCollision(possibleCollision);
 		if(collision != null)
-			moveLeft();
+			fixPositionOnCollisionAfterMovingRight(collision);
 		return collision;
+	}
+
+	private void fixPositionOnCollisionAfterMovingRight(GameObject collision)
+	{
+		moveLeft();
+		if (collision.getY() > getY())
+			setY(getY() - getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
+		else
+			setY(getY() + getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
 	}
 
 	public GameObject moveLeft(Collection<GameObject> possibleCollision)
@@ -28,8 +37,17 @@ public abstract class MovableGameObject extends GameObject
 		moveLeft();
 		GameObject collision = checkForCollision(possibleCollision);
 		if (collision != null)
-			moveRight();
+			fixPositionOnCollisionAfterMovingLeft(collision);
 		return collision;
+	}
+
+	private void fixPositionOnCollisionAfterMovingLeft(GameObject collision)
+	{
+		moveRight();
+		if (collision.getY() > getY())
+			setY(getY() - getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
+		else
+			setY(getY() + getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
 	}
 
 	public GameObject moveUp(Collection<GameObject> possibleCollision)
@@ -37,8 +55,17 @@ public abstract class MovableGameObject extends GameObject
 		moveUp();
 		GameObject collision = checkForCollision(possibleCollision);
 		if (collision != null)
-			moveDown();
+			fixPositionOnCollisionAfterMovingUp(collision);
 		return collision;
+	}
+
+	private void fixPositionOnCollisionAfterMovingUp(GameObject collision)
+	{
+		moveDown();
+		if (collision.getX() > getX())
+			setX(getX() - getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
+		else
+			setX(getX() + getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
 	}
 
 	public GameObject moveDown(Collection<GameObject> possibleCollision)
@@ -46,8 +73,17 @@ public abstract class MovableGameObject extends GameObject
 		moveDown();
 		GameObject collision = checkForCollision(possibleCollision);
 		if (collision != null)
-			moveUp();
+			fixPositionOnCollisionAfterMovingDown(collision);
 		return collision;
+	}
+
+	private void fixPositionOnCollisionAfterMovingDown(GameObject collision)
+	{
+		moveUp();
+		if (collision.getX() > getX())
+			setX(getX() - getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
+		else
+			setX(getX() + getMoveSpeed() * Gdx.graphics.getDeltaTime() / 6.0f);
 	}
 
 	public void moveLeft()

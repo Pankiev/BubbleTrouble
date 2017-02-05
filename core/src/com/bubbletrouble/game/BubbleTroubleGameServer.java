@@ -6,16 +6,16 @@ import java.util.Random;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.GameException;
-import com.bubbletrouble.game.server.packets.ActionInfo;
-import com.bubbletrouble.game.server.packets.CollisionActionInfo;
-import com.bubbletrouble.game.server.packets.ObstacleAddInfo;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.player.PlayerProduceInfo;
-import com.bubbletrouble.game.server.packets.player.PlayerRemoveInfo;
+import com.bubbletrouble.game.server.packets.action.ActionInfo;
+import com.bubbletrouble.game.server.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
+import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
+import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.server.packets.remove.ObjectRemoveInfo;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -101,7 +101,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private void addRandomObstacle()
 	{
-		ObstacleAddInfo addObstacle = new ObstacleAddInfo();
+		ObstacleProduceInfo addObstacle = new ObstacleProduceInfo();
 		addObstacle.x = new Random().nextInt(500);
 		addObstacle.y = new Random().nextInt(500);
 		addObstacle.id = getNextId();
@@ -119,7 +119,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private void userDisconnected(Connection connection)
 	{
-		PlayerRemoveInfo removePlayer = new PlayerRemoveInfo();
+		ObjectRemoveInfo removePlayer = new ObjectRemoveInfo();
 		removePlayer.id = connection.getID();
 		server.sendToAllExceptTCP(connection.getID(), removePlayer);
 		playState.removeObject(removePlayer.id);
@@ -137,6 +137,13 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	{
 		playState.makeAction(actionInfo);
 		server.sendToAllTCP(actionInfo);
+	}
+
+	private void produceInfoReceived(ProduceInfo produceInfo)
+	{
+		produceInfo.id = getNextId();
+		playState.addObject(produceInfo);
+		server.sendToAllTCP(produceInfo);
 	}
 
 	private class ServerListener extends Listener
@@ -160,7 +167,10 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 				actionRecieved((ActionInfo) object, connection);
 			else if (object instanceof CollisionActionInfo)
 				actionRecieved((CollisionActionInfo) object, connection);
+			else if (object instanceof ProduceInfo)
+				produceInfoReceived((ProduceInfo) object);
 		}
+
 	}
 
 	private class ServerBindingExcepiton extends GameException

@@ -1,9 +1,9 @@
-package com.bubbletrouble.game.server.packets;
+package com.bubbletrouble.game.server.packets.produce;
 
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.objects.Obstacle;
 
-public class ObstacleAddInfo extends ProduceInfo
+public class ObstacleProduceInfo extends ProduceInfo
 {
 	public float x;
 	public float y;

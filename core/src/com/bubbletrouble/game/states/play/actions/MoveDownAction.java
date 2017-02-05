@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.libgdxcommon.MovableGameObject;
-import com.bubbletrouble.game.server.packets.CollisionAction;
 import com.bubbletrouble.game.server.packets.Registerable;
+import com.bubbletrouble.game.server.packets.action.CollisionAction;
 
 import utils.Caster;
 
@@ -13,6 +13,7 @@ import utils.Caster;
 public class MoveDownAction implements CollisionAction
 {
 	private float yChange = 0;
+	private float xChange = 0;
 
 	@Override
 	public void makeAction(GameObject gameObject, Collection<GameObject> possibleCollision)
@@ -20,11 +21,13 @@ public class MoveDownAction implements CollisionAction
 		MovableGameObject player = Caster.castToPlayer(gameObject);
 		player.moveDown(possibleCollision);
 		yChange = player.getY();
+		xChange = player.getX();
 	}
 
 	@Override
 	public void applyChangesToOther(GameObject gameObject)
 	{
+		gameObject.setX(xChange);
 		gameObject.setY(yChange);
 	}
 }

@@ -6,55 +6,54 @@ import java.util.TreeMap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.server.packets.ProduceInfo;
+import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 
 public abstract class PlayState extends State
 {
 	Map<Long, GameObject> gameObjects = new TreeMap<Long, GameObject>();
 
 	@Override
-	public void render(SpriteBatch batch)
+	public synchronized void render(SpriteBatch batch)
 	{
 		for (GameObject object : gameObjects.values())
 			object.render(batch);
 	}
 
 	@Override
-	public void update()
+	public synchronized void update()
 	{
 		for (GameObject object : gameObjects.values())
 			object.update();
 	}
 
-	public void removeObject(long id)
+	public synchronized void removeObject(long id)
 	{
 		gameObjects.remove(id);
 	}
 
-	public GameObject getObject(long id)
+	public synchronized GameObject getObject(long id)
 	{
 		return gameObjects.get(id);
 	}
 
-	public void addObject(GameObject gameObject, long id)
+	public synchronized void addObject(GameObject gameObject, long id)
 	{
 		gameObjects.put(id, gameObject);
 	}
 
-	public void addObject(ProduceInfo info)
+	public synchronized void addObject(ProduceInfo info)
 	{
 		GameObject object = info.produce();
 		gameObjects.put(info.id, object);
 	}
 
-	public void addObjects(ProduceInfo[] infos)
+	public synchronized void addObjects(ProduceInfo[] infos)
 	{
 		for (ProduceInfo produceInfo : infos)
 			addObject(produceInfo);
 	}
 
-
-	public ProduceInfo[] getGameObjects()
+	public synchronized ProduceInfo[] getGameObjects()
 	{
 		ProduceInfo[] info = new ProduceInfo[gameObjects.size()];
 		int i = 0;

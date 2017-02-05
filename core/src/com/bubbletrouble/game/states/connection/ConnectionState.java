@@ -18,11 +18,11 @@ import utils.Sleeper;
 public class ConnectionState extends State implements TextInputListener
 {
 	private Client client;
-	BitmapFont font = new BitmapFont();
+	private BitmapFont font = new BitmapFont();
 	private static final float timeout = 10.0f;
-	float connectingTime = 0.0f;
-	String messageToUser = "";
-    boolean isConnecting = false;
+	private float connectingTime = 0.0f;
+	private String messageToUser = "";
+	private boolean isConnecting = false;
 
 	public ConnectionState(Client client)
 	{
@@ -97,6 +97,6 @@ public class ConnectionState extends State implements TextInputListener
 	@Override
 	public void canceled()
 	{
-		BubbleTroubleGameClient.states.pop();
+		askForIp();
 	}
 }
