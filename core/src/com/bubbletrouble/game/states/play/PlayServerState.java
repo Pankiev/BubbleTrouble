@@ -30,16 +30,10 @@ public class PlayServerState extends PlayState
 	@Override
 	public synchronized void update()
 	{
-		List<GameObject> toDelete = new ArrayList<GameObject>();
 		for (GameObject object : gameObjects.values())
-		{
 			updateObject(object);
-			if (object.shouldBeDeleted())
-				toDelete.add(object);
-		}
 
-		for (GameObject trash : toDelete)
-			remove(trash);
+		clearGarbage();
 	}
 
 	private void updateObject(GameObject object)
@@ -53,10 +47,12 @@ public class PlayServerState extends PlayState
 		}
 	}
 
-	private void remove(GameObject object)
+	@Override
+	public void removeObject(GameObject object)
 	{
-		gameObjects.remove(object.getId());
-		server.sendToAllTCP(new ObjectRemoveInfo(object.getId()));
+		long id = object.getId();
+		gameObjects.remove(id);
+		server.sendToAllTCP(new ObjectRemoveInfo(id));
 	}
 
 	private PositionUpdateInfo producePositionUpdateInfo(GameObject object)
@@ -72,29 +68,36 @@ public class PlayServerState extends PlayState
 	public void render(SpriteBatch batch)
 	{
 		y = 20 * messages.size();
-		for (String message : messages) {
+		for (String message : messages)
+		{
 			font.draw(batch, message, 20, y);
 			y -= 20;
 		}
-
+		super.render(batch);
 	}
 
 	public void makeAction(ActionInfo actionInfo)
 	{
 		GameObject object = gameObjects.get(actionInfo.targetId);
-		Action action = actionInfo.action;
-		action.makeAction(object);
+		if (object != null)
+		{
+			Action action = actionInfo.action;
+			action.makeAction(object);
+		}
 	}
 
 	public void makeAction(CollisionActionInfo actionInfo)
 	{
 		GameObject object = gameObjects.get(actionInfo.targetId);
-		CollisionAction action = actionInfo.action;
-		action.makeAction(object, gameObjects.values());
+		if (object != null)
+		{
+			CollisionAction action = actionInfo.action;
+			action.makeAction(object, gameObjects.values());
+		}
 	}
 
 	public void addMessage(String message)
-    {
+	{
 		messages.add(message);
 	}
 }

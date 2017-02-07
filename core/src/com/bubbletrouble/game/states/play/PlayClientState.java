@@ -3,10 +3,10 @@ package com.bubbletrouble.game.states.play;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.objects.Obstacle;
 import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.Info;
 import com.bubbletrouble.game.server.packets.action.Action;
 import com.bubbletrouble.game.server.packets.action.ActionInfo;
 import com.bubbletrouble.game.server.packets.action.CollisionAction;
@@ -15,6 +15,9 @@ import com.bubbletrouble.game.server.packets.action.PositionUpdateInfo;
 import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.server.packets.requsets.DisconnectRequest;
+import com.bubbletrouble.game.states.connection.ConnectionState;
+import com.bubbletrouble.game.states.connection.ReconnectionState;
 import com.bubbletrouble.game.states.play.actions.UpdateAngleAction;
 import com.esotericsoftware.kryonet.Client;
 
@@ -22,6 +25,7 @@ import utils.Caster;
 
 public class PlayClientState extends PlayState
 {
+
 	Client client;
 
 	public PlayClientState(Client client)
@@ -41,6 +45,8 @@ public class PlayClientState extends PlayState
 	@Override
 	public void update()
 	{
+		if (!client.isConnected())
+			BubbleTroubleGameClient.states.set(new ConnectionState(client));
 		inputHandler.process();
 		UpdateAngleAction action = new UpdateAngleAction();
 		action.mousePosition = new Vector2(Gdx.input.getX(), -Gdx.input.getY() + Gdx.graphics.getHeight());
@@ -65,7 +71,7 @@ public class PlayClientState extends PlayState
 
 	public void addObstacle(ObstacleProduceInfo obstacleAddInfo)
 	{
-		Obstacle obstacle = new Obstacle(obstacleAddInfo.id);
+		Obstacle obstacle = new Obstacle(this, obstacleAddInfo.id);
 		obstacle.setPosition(obstacleAddInfo.x, obstacleAddInfo.y);
 		gameObjects.put(obstacleAddInfo.id, obstacle);
 	}
@@ -79,22 +85,25 @@ public class PlayClientState extends PlayState
 	public void applyChanges(ActionInfo actionInfo)
 	{
 		GameObject object = getObject(actionInfo.targetId);
-		actionInfo.action.applyChangesToOther(object);
+		if (object != null)
+			actionInfo.action.applyChangesToOther(object);
 	}
 
 	public void applyChanges(CollisionActionInfo actionInfo)
 	{
 		GameObject object = getObject(actionInfo.targetId);
-		actionInfo.action.applyChangesToOther(object);
+		if (object != null)
+			actionInfo.action.applyChangesToOther(object);
 	}
 
 	public void update(PositionUpdateInfo produceInfo)
 	{
 		GameObject toUpdate = getObject(produceInfo.id);
-		produceInfo.update(toUpdate);
+		if (toUpdate != null)
+			produceInfo.update(toUpdate);
 	}
 
-	public void sendInfo(Info info)
+	public void send(Object info)
 	{
 		client.sendTCP(info);
 	}
@@ -105,4 +114,18 @@ public class PlayClientState extends PlayState
 		Player player = Caster.castToPlayer(object);
 		return player;
 	}
+
+	@Override
+	public synchronized void removeObject(GameObject object)
+	{
+		if (object != null)
+			if (object.getId() == client.getID())
+			{
+				client.sendTCP(new DisconnectRequest());
+				BubbleTroubleGameClient.states.set(new ReconnectionState(client));
+			}
+			else
+				super.removeObject(object);
+	}
+
 }

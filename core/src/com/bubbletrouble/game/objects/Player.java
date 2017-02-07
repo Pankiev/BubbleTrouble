@@ -9,22 +9,25 @@ import com.bubbletrouble.game.libgdxcommon.MovableGameObject;
 import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceBulletInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.states.play.PlayState;
 
 public class Player extends MovableGameObject
 {
 	private static final float ROTATION_CONSTANT = 140.0f;
-	Vector2 center = new Vector2();
+	private Vector2 center = new Vector2();
+	private float shootingTime = 0.0f;
+	private float shootingInterval = 0.3f;
 
-	public Player(long id)
+	public Player(PlayState linkedState, long id)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("blue.gif"));
+		super((Texture) BubbleTroubleGameClient.assets.get("blue.gif"), linkedState);
 		setId(id);
 	}
 
 	@Override
 	public void update()
 	{
-
+		shootingTime += Gdx.graphics.getDeltaTime();
 	}
 
 	@Override
@@ -41,13 +44,20 @@ public class Player extends MovableGameObject
 		setRotation(rotation);
 	}
 
-	public ProduceBulletInfo produceShootenBulletInfo()
+	public ProduceBulletInfo produceShootenBulletInfo(float mouseX, float mouseY)
 	{
 		ProduceBulletInfo info = new ProduceBulletInfo();
-		info.x = getX() + 20;
-		info.y = getY() + 10;
-		info.mouseX = Gdx.input.getX();
-		info.mouseY = -Gdx.input.getY() + Gdx.graphics.getHeight();
+		info.mouseX = mouseX;
+		info.mouseY = mouseY;
+		center = getSprite().getBoundingRectangle().getCenter(center);
+
+		Vector2 circularPosition = new Vector2(getX() - mouseX, getY() - mouseY);
+		float angle = circularPosition.angle();
+		circularPosition.set(15.0f, 15.0f);
+		circularPosition.setAngle(angle);
+
+		info.x = center.x - 7.5f - circularPosition.x;
+		info.y = center.y - 3.5f - circularPosition.y;
 		return info;
 	}
 
@@ -59,6 +69,16 @@ public class Player extends MovableGameObject
 		info.y = getY();
 		info.id = getId();
 		return info;
+	}
+
+	public boolean canShoot()
+	{
+		if (shootingTime > shootingInterval)
+		{
+			shootingTime = 0.0f;
+			return true;
+		}
+		return false;
 	}
 
 }

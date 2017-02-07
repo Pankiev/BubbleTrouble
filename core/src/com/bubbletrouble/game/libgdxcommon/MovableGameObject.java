@@ -9,9 +9,9 @@ public abstract class MovableGameObject extends GameObject
 {
 	private float moveSpeed = 100.0f;
 
-	protected MovableGameObject(Texture lookout)
+	protected MovableGameObject(Texture lookout, State linkedState)
 	{
-		super(lookout);
+		super(lookout, linkedState);
 	}
 
 	public GameObject moveRight(Collection<GameObject> possibleCollision)

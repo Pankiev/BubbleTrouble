@@ -1,5 +1,8 @@
 package com.bubbletrouble.game.states.play;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,9 +11,12 @@ import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 
+
+
 public abstract class PlayState extends State
 {
 	Map<Long, GameObject> gameObjects = new TreeMap<Long, GameObject>();
+	private List<GameObject> garbage = new ArrayList<GameObject>();
 
 	@Override
 	public synchronized void render(SpriteBatch batch)
@@ -24,11 +30,18 @@ public abstract class PlayState extends State
 	{
 		for (GameObject object : gameObjects.values())
 			object.update();
+		clearGarbage();
 	}
 
-	public synchronized void removeObject(long id)
+	public void removeObject(long id)
 	{
-		gameObjects.remove(id);
+		GameObject toRemove = gameObjects.get(id);
+		removeObject(toRemove);
+	}
+
+	public synchronized void removeObject(GameObject object)
+	{
+		gameObjects.remove(object.getId());
 	}
 
 	public synchronized GameObject getObject(long id)
@@ -43,7 +56,7 @@ public abstract class PlayState extends State
 
 	public synchronized void addObject(ProduceInfo info)
 	{
-		GameObject object = info.produce();
+		GameObject object = info.produce(this);
 		gameObjects.put(info.id, object);
 	}
 
@@ -53,7 +66,7 @@ public abstract class PlayState extends State
 			addObject(produceInfo);
 	}
 
-	public synchronized ProduceInfo[] getGameObjects()
+	public synchronized ProduceInfo[] getGameObjectsInfo()
 	{
 		ProduceInfo[] info = new ProduceInfo[gameObjects.size()];
 		int i = 0;
@@ -64,4 +77,24 @@ public abstract class PlayState extends State
 		}
 		return info;
 	}
+
+	public synchronized Collection<GameObject> getGameObjects()
+	{
+		return gameObjects.values();
+	}
+
+	protected void clearGarbage()
+	{
+		while (!(garbage.isEmpty()))
+		{
+			GameObject trash = garbage.remove(0);
+			removeObject(trash);
+		}
+	}
+
+	public void addToGarbage(GameObject trash)
+	{
+		garbage.add(trash);
+	}
+
 }

@@ -9,12 +9,14 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class Assets
 {
 	private String assetsPath = "assets";
 	private Map<String, Class<?>> classTypes = new HashMap<String, Class<?>>();
 	private AssetManager assets = new AssetManager();
+	private BitmapFont font = new BitmapFont();
 
 	public Assets()
 	{
@@ -70,6 +72,12 @@ public class Assets
 	public void dispose()
 	{
 		assets.dispose();
+		font.dispose();
+	}
+
+	public BitmapFont getFont()
+	{
+		return font;
 	}
 
 	private class UnknownExtensionException extends GameException

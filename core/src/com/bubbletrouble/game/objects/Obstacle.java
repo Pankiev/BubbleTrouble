@@ -4,15 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 
 public class Obstacle extends GameObject
 {
 
-	public Obstacle(long id)
+	public Obstacle(State linkedState, long id)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("red.gif"));
+		super((Texture) BubbleTroubleGameClient.assets.get("red.gif"), linkedState);
 		setId(id);
 	}
 

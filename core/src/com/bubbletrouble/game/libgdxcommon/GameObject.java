@@ -18,10 +18,12 @@ public abstract class GameObject extends Actor implements InfoProcucable
 	private long id;
 	private Circle circle = new Circle();
 	protected boolean needsPositionUpdate = false;
+	protected State linkedState;
 
-	protected GameObject(Texture lookout)
+	protected GameObject(Texture lookout, State linkedState)
 	{
 		super();
+		this.linkedState = linkedState;
 		sprite = new Sprite(lookout);
 		sprite.setRegion(lookout);
 		super.setSize(lookout.getWidth(), lookout.getHeight());
@@ -230,10 +232,5 @@ public abstract class GameObject extends Actor implements InfoProcucable
 	public void informAboutPositionUpdate()
 	{
 		needsPositionUpdate = false;
-	}
-
-	public boolean shouldBeDeleted()
-	{
-		return false;
 	}
 }
