@@ -17,7 +17,7 @@ import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.server.packets.requsets.DisconnectRequest;
 import com.bubbletrouble.game.states.connection.ConnectionState;
-import com.bubbletrouble.game.states.connection.ReconnectionState;
+import com.bubbletrouble.game.states.connection.PreReconnectionState;
 import com.bubbletrouble.game.states.play.actions.UpdateAngleAction;
 import com.esotericsoftware.kryonet.Client;
 
@@ -46,7 +46,11 @@ public class PlayClientState extends PlayState
 	public void update()
 	{
 		if (!client.isConnected())
+		{
 			BubbleTroubleGameClient.states.set(new ConnectionState(client));
+			return;
+		}
+
 		inputHandler.process();
 		UpdateAngleAction action = new UpdateAngleAction();
 		action.mousePosition = new Vector2(Gdx.input.getX(), -Gdx.input.getY() + Gdx.graphics.getHeight());
@@ -85,22 +89,19 @@ public class PlayClientState extends PlayState
 	public void applyChanges(ActionInfo actionInfo)
 	{
 		GameObject object = getObject(actionInfo.targetId);
-		if (object != null)
-			actionInfo.action.applyChangesToOther(object);
+		actionInfo.action.applyChangesToOther(object);
 	}
 
 	public void applyChanges(CollisionActionInfo actionInfo)
 	{
 		GameObject object = getObject(actionInfo.targetId);
-		if (object != null)
-			actionInfo.action.applyChangesToOther(object);
+		actionInfo.action.applyChangesToOther(object);
 	}
 
 	public void update(PositionUpdateInfo produceInfo)
 	{
 		GameObject toUpdate = getObject(produceInfo.id);
-		if (toUpdate != null)
-			produceInfo.update(toUpdate);
+		produceInfo.update(toUpdate);
 	}
 
 	public void send(Object info)
@@ -118,14 +119,12 @@ public class PlayClientState extends PlayState
 	@Override
 	public synchronized void removeObject(GameObject object)
 	{
-		if (object != null)
-			if (object.getId() == client.getID())
-			{
-				client.sendTCP(new DisconnectRequest());
-				BubbleTroubleGameClient.states.set(new ReconnectionState(client));
-			}
-			else
-				super.removeObject(object);
+		if (object.getId() == client.getID())
+		{
+			client.sendTCP(new DisconnectRequest());
+			BubbleTroubleGameClient.states.set(new PreReconnectionState(client));
+		} else
+			super.removeObject(object);
 	}
 
 }

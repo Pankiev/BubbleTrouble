@@ -28,7 +28,7 @@ public class PlayServerState extends PlayState
 	}
 
 	@Override
-	public synchronized void update()
+	public void update()
 	{
 		for (GameObject object : gameObjects.values())
 			updateObject(object);

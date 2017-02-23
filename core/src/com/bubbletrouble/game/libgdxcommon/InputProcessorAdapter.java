@@ -1,6 +1,7 @@
 package com.bubbletrouble.game.libgdxcommon;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +11,8 @@ import com.badlogic.gdx.InputProcessor;
 public class InputProcessorAdapter implements InputProcessor
 {
 	private Map<String, KeyHandler> keyHandlers;
-	protected Map<Integer, KeyHandler> keyHandlersToActivate = new HashMap<Integer, KeyHandler>();
+	protected Map<Integer, KeyHandler> keyHandlersToActivate = Collections
+			.synchronizedMap(new HashMap<Integer, KeyHandler>());
 
 	public InputProcessorAdapter()
 	{
@@ -18,7 +20,7 @@ public class InputProcessorAdapter implements InputProcessor
 	}
 
 	@Override
-	public synchronized boolean keyDown(int keycode)
+	public boolean keyDown(int keycode)
 	{
 		KeyHandler keyHandler = getKeyHandler(keycode);
 		if (!keyHandler.equals(KeyHandler.EMPTY))
@@ -27,7 +29,7 @@ public class InputProcessorAdapter implements InputProcessor
 	}
 
 	@Override
-	public synchronized boolean keyUp(int keycode)
+	public boolean keyUp(int keycode)
 	{
 		keyHandlersToActivate.remove(keycode);
 		return true;
@@ -69,7 +71,7 @@ public class InputProcessorAdapter implements InputProcessor
 		return false;
 	}
 
-	public synchronized void process()
+	public void process()
 	{
 		activateAll(getActiveKeyHandlers());
 	}

@@ -37,7 +37,6 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private Server server;
 	private PlayServerState playState;
 	private long nextObjectId = (long) Integer.MAX_VALUE + 1;
-
 	SpriteBatch batch;
 
 	@Override
@@ -52,6 +51,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		tryBindingServer();
 		addListeners();
 		playState = new PlayServerState(server);
+
 	}
 
 	private void registerPackets()

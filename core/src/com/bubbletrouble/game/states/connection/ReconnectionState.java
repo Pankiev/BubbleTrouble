@@ -13,7 +13,7 @@ import com.esotericsoftware.kryonet.Client;
 public class ReconnectionState extends State
 {
 	private Client client;
-	BitmapFont font = BubbleTroubleGameClient.assets.getFont();
+	private BitmapFont font = BubbleTroubleGameClient.assets.getFont();
 
 	public ReconnectionState(Client client)
 	{

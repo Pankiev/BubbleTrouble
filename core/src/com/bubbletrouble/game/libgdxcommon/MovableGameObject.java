@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-public abstract class MovableGameObject extends GameObject
+public abstract class MovableGameObject extends ConnectionGameObject
 {
 	private float moveSpeed = 100.0f;
 

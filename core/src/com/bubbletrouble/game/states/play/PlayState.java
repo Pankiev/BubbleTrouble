@@ -2,9 +2,11 @@ package com.bubbletrouble.game.states.play;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.GameObject;
@@ -15,18 +17,27 @@ import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 
 public abstract class PlayState extends State
 {
-	Map<Long, GameObject> gameObjects = new TreeMap<Long, GameObject>();
+	Map<Long, GameObject> gameObjects = Collections.synchronizedMap(new TreeMap<Long, GameObject>());
 	private List<GameObject> garbage = new ArrayList<GameObject>();
 
 	@Override
-	public synchronized void render(SpriteBatch batch)
+	public void render(SpriteBatch batch)
 	{
-		for (GameObject object : gameObjects.values())
-			object.render(batch);
+		final SpriteBatch batch2 = batch;
+		gameObjects.forEach(new BiConsumer<Long, GameObject>()
+		{
+			@Override
+			public void accept(Long id, GameObject object)
+			{
+				object.render(batch2);
+			}
+		});
+		// for (GameObject object : gameObjects.values())
+		// object.render(batch);
 	}
 
 	@Override
-	public synchronized void update()
+	public void update()
 	{
 		for (GameObject object : gameObjects.values())
 			object.update();
@@ -39,34 +50,34 @@ public abstract class PlayState extends State
 		removeObject(toRemove);
 	}
 
-	public synchronized void removeObject(GameObject object)
+	public void removeObject(GameObject object)
 	{
 		gameObjects.remove(object.getId());
 	}
 
-	public synchronized GameObject getObject(long id)
+	public GameObject getObject(long id)
 	{
 		return gameObjects.get(id);
 	}
 
-	public synchronized void addObject(GameObject gameObject, long id)
+	public void addObject(GameObject gameObject, long id)
 	{
 		gameObjects.put(id, gameObject);
 	}
 
-	public synchronized void addObject(ProduceInfo info)
+	public void addObject(ProduceInfo info)
 	{
 		GameObject object = info.produce(this);
 		gameObjects.put(info.id, object);
 	}
 
-	public synchronized void addObjects(ProduceInfo[] infos)
+	public void addObjects(ProduceInfo[] infos)
 	{
 		for (ProduceInfo produceInfo : infos)
 			addObject(produceInfo);
 	}
 
-	public synchronized ProduceInfo[] getGameObjectsInfo()
+	public ProduceInfo[] getGameObjectsInfo()
 	{
 		ProduceInfo[] info = new ProduceInfo[gameObjects.size()];
 		int i = 0;
@@ -78,7 +89,7 @@ public abstract class PlayState extends State
 		return info;
 	}
 
-	public synchronized Collection<GameObject> getGameObjects()
+	public Collection<GameObject> getGameObjects()
 	{
 		return gameObjects.values();
 	}
