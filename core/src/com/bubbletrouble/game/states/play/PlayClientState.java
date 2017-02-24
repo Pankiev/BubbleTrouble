@@ -112,7 +112,7 @@ public class PlayClientState extends PlayState
 	public Player getItsOwnPlayer()
 	{
 		GameObject object = gameObjects.get((long) client.getID());
-		Player player = Caster.castToPlayer(object);
+		Player player = Caster.castToPlayer(object, Player.class);
 		return player;
 	}
 

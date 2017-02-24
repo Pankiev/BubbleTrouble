@@ -16,7 +16,7 @@ public class UpdateAngleAction implements Action
 	@Override
 	public void makeAction(GameObject gameObject)
 	{
-		Player player = Caster.castToPlayer(gameObject);
+		Player player = Caster.castToPlayer(gameObject, Player.class);
 		player.updateAngle(mousePosition);
 		angleChange = player.getRotation();
 	}

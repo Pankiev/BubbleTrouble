@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.esotericsoftware.kryonet.Client;
@@ -27,8 +25,8 @@ public class PreReconnectionState extends State
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		TextButton button = new TextButton("Play again", new Skin());
-		button.draw(batch, 1.0f);
+		// TextButton button = new TextButton("Play again", new Skin());
+		// button.draw(batch, 1.0f);
 		label.draw(batch, 1.0f);
 	}
 

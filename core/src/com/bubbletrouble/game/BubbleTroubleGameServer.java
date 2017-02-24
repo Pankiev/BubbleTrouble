@@ -159,7 +159,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	public void shootRequestReceived(ShootRequest shootRequest)
 	{
-		Player player = Caster.castToPlayer(playState.getObject(shootRequest.id));
+		Player player = Caster.castToPlayer(playState.getObject(shootRequest.id), Player.class);
 		if (player.canShoot())
 		{
 			ProduceBulletInfo info = player.produceShootenBulletInfo(shootRequest.mouseX, shootRequest.mouseY);
