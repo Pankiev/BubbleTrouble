@@ -7,19 +7,19 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.exception.GameException;
-import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.PacketsRegisterer;
-import com.bubbletrouble.game.server.packets.action.ActionInfo;
-import com.bubbletrouble.game.server.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
-import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
-import com.bubbletrouble.game.server.packets.produce.ProduceBulletInfo;
-import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
-import com.bubbletrouble.game.server.packets.requsets.AddObstacleRequest;
-import com.bubbletrouble.game.server.packets.requsets.DisconnectRequest;
-import com.bubbletrouble.game.server.packets.requsets.ShootRequest;
+import com.bubbletrouble.game.objects.player.Player;
+import com.bubbletrouble.game.packets.action.ActionInfo;
+import com.bubbletrouble.game.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
+import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
+import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
+import com.bubbletrouble.game.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
+import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
+import com.bubbletrouble.game.packets.requsets.ShootRequest;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -130,9 +130,6 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private void userDisconnected(Connection connection)
 	{
-		// ObjectRemoveInfo removePlayer = new ObjectRemoveInfo();
-		// removePlayer.id = connection.getID();
-		// server.sendToAllExceptTCP(connection.getID(), removePlayer);
 		if (playState.hasObject(connection.getID()))
 			playState.removeObject(connection.getID());
 		Log.info(">> Player disconnected " + connection.getID());
@@ -160,7 +157,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	public void shootRequestReceived(ShootRequest shootRequest)
 	{
-		Player player = Caster.castToPlayer(playState.getObject(shootRequest.id), Player.class);
+		Player player = Caster.cast(playState.getObject(shootRequest.id), Player.class);
 		if (player.canShoot())
 		{
 			ProduceBulletInfo info = player.produceShootenBulletInfo(shootRequest.mouseX, shootRequest.mouseY);

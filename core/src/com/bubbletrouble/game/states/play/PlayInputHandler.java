@@ -3,13 +3,13 @@ package com.bubbletrouble.game.states.play;
 import com.badlogic.gdx.Gdx;
 import com.bubbletrouble.game.libgdxcommon.input.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.input.KeyHandler;
-import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.requsets.AddObstacleRequest;
-import com.bubbletrouble.game.server.packets.requsets.ShootRequest;
-import com.bubbletrouble.game.states.play.actions.MoveDownAction;
-import com.bubbletrouble.game.states.play.actions.MoveLeftAction;
-import com.bubbletrouble.game.states.play.actions.MoveRightAction;
-import com.bubbletrouble.game.states.play.actions.MoveUpAction;
+import com.bubbletrouble.game.objects.player.MoveDownAction;
+import com.bubbletrouble.game.objects.player.MoveLeftAction;
+import com.bubbletrouble.game.objects.player.MoveRightAction;
+import com.bubbletrouble.game.objects.player.MoveUpAction;
+import com.bubbletrouble.game.objects.player.Player;
+import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
+import com.bubbletrouble.game.packets.requsets.ShootRequest;
 
 public class PlayInputHandler extends InputProcessorAdapter
 {

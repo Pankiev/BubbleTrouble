@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.server.packets;
+package com.bubbletrouble.game.kryonetcommon;
 
 @RegisterableBase
 public abstract class Info

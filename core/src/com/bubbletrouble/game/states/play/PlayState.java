@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
-import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.packets.produce.ProduceInfo;
 
 
 

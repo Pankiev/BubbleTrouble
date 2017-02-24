@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.server.packets.produce;
+package com.bubbletrouble.game.packets.produce;
 
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.libgdxcommon.State;

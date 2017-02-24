@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.server.packets;
+package com.bubbletrouble.game.kryonetcommon;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;

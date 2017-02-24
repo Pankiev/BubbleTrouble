@@ -1,8 +1,8 @@
-package com.bubbletrouble.game.server.packets.produce;
+package com.bubbletrouble.game.packets.produce;
 
+import com.bubbletrouble.game.kryonetcommon.Info;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
-import com.bubbletrouble.game.server.packets.Info;
 
 public abstract class ProduceInfo extends Info
 {

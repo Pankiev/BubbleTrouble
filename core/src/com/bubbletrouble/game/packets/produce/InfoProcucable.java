@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.server.packets.produce;
+package com.bubbletrouble.game.packets.produce;
 
 public interface InfoProcucable
 {

@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.objects;
+package com.bubbletrouble.game.objects.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
-import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
-import com.bubbletrouble.game.server.packets.produce.ProduceBulletInfo;
-import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
+import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
+import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.states.play.PlayState;
 
 public class Player extends MovableGameObject

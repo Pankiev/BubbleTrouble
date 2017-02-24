@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.server.packets.produce.InfoProcucable;
+import com.bubbletrouble.game.packets.produce.InfoProcucable;
 
 public abstract class GameObject extends Actor implements InfoProcucable
 {

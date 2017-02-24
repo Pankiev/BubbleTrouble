@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.server.packets.action;
+package com.bubbletrouble.game.packets.action;
 
 import java.util.Collection;
 

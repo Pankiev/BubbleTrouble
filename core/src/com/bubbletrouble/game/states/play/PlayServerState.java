@@ -6,12 +6,12 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
-import com.bubbletrouble.game.server.packets.action.Action;
-import com.bubbletrouble.game.server.packets.action.ActionInfo;
-import com.bubbletrouble.game.server.packets.action.CollisionAction;
-import com.bubbletrouble.game.server.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.server.packets.action.PositionUpdateInfo;
-import com.bubbletrouble.game.server.packets.remove.ObjectRemoveInfo;
+import com.bubbletrouble.game.packets.action.Action;
+import com.bubbletrouble.game.packets.action.ActionInfo;
+import com.bubbletrouble.game.packets.action.CollisionAction;
+import com.bubbletrouble.game.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.packets.action.PositionUpdateInfo;
+import com.bubbletrouble.game.packets.remove.ObjectRemoveInfo;
 import com.esotericsoftware.kryonet.Server;
 
 public class PlayServerState extends PlayState

@@ -1,6 +1,6 @@
-package com.bubbletrouble.game.server.packets.remove;
+package com.bubbletrouble.game.packets.remove;
 
-import com.bubbletrouble.game.server.packets.Info;
+import com.bubbletrouble.game.kryonetcommon.Info;
 
 public class ObjectRemoveInfo extends Info
 {

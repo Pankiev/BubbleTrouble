@@ -1,8 +1,8 @@
-package com.bubbletrouble.game.server.packets.produce;
+package com.bubbletrouble.game.packets.produce;
 
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
-import com.bubbletrouble.game.objects.Player;
+import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.states.play.PlayState;
 
 public class PlayerProduceInfo extends ProduceInfo

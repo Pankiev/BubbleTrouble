@@ -7,8 +7,8 @@ import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
-import com.bubbletrouble.game.server.packets.produce.ProduceBulletInfo;
-import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
+import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.states.play.PlayState;
 
 public class Bullet extends MovableGameObject

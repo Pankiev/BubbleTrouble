@@ -6,19 +6,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.Obstacle;
-import com.bubbletrouble.game.objects.Player;
-import com.bubbletrouble.game.server.packets.action.Action;
-import com.bubbletrouble.game.server.packets.action.ActionInfo;
-import com.bubbletrouble.game.server.packets.action.CollisionAction;
-import com.bubbletrouble.game.server.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.server.packets.action.PositionUpdateInfo;
-import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
-import com.bubbletrouble.game.server.packets.produce.PlayerProduceInfo;
-import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
-import com.bubbletrouble.game.server.packets.requsets.DisconnectRequest;
+import com.bubbletrouble.game.objects.bullet.UpdateAngleAction;
+import com.bubbletrouble.game.objects.player.Player;
+import com.bubbletrouble.game.packets.action.Action;
+import com.bubbletrouble.game.packets.action.ActionInfo;
+import com.bubbletrouble.game.packets.action.CollisionAction;
+import com.bubbletrouble.game.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.packets.action.PositionUpdateInfo;
+import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
+import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
+import com.bubbletrouble.game.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.connection.PreReconnectionState;
-import com.bubbletrouble.game.states.play.actions.UpdateAngleAction;
 import com.esotericsoftware.kryonet.Client;
 
 import utils.Caster;
@@ -112,7 +112,7 @@ public class PlayClientState extends PlayState
 	public Player getItsOwnPlayer()
 	{
 		GameObject object = gameObjects.get((long) client.getID());
-		Player player = Caster.castToPlayer(object, Player.class);
+		Player player = Caster.cast(object, Player.class);
 		return player;
 	}
 
