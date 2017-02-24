@@ -7,9 +7,11 @@ import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
+import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
-import com.bubbletrouble.game.states.play.PlayState;
+import com.bubbletrouble.game.states.play.GameObjectsContainer;
+import com.bubbletrouble.game.states.play.PacketsSender;
 
 public class Bullet extends MovableGameObject
 {
@@ -38,7 +40,10 @@ public class Bullet extends MovableGameObject
 	public void update()
 	{
 		updateLivingTime();
-		updatePosition();
+		// updatePosition();
+		Action flightAction = new FlightAction();
+		flightAction.makeAction(this);
+		((PacketsSender) linkedState).sendAction(flightAction, getId());
 		needsPositionUpdate = true;
 		handlePossibleCollision();
 		if (shouldBeDeleted())
@@ -47,12 +52,12 @@ public class Bullet extends MovableGameObject
 
 	private void removeFromPlayState(GameObject object)
 	{
-		((PlayState) linkedState).addToGarbage(object);
+		((GameObjectsContainer) linkedState).addToGarbage(object);
 	}
 
 	private void handlePossibleCollision()
 	{
-		GameObject collision = checkForCollision(((PlayState) linkedState).getGameObjects());
+		GameObject collision = checkForCollision(((GameObjectsContainer) linkedState).getGameObjects());
 		if (collision != null)
 			handleCollision(collision);
 	}
@@ -81,8 +86,8 @@ public class Bullet extends MovableGameObject
 	private boolean shouldBeDeleted()
 	{
 		return livingTime > MAX_LIVE_TIME;
-	}
 
+	}
 	@Override
 	public ProduceInfo produceInfo()
 	{

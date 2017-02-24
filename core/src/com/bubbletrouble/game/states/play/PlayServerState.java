@@ -14,7 +14,7 @@ import com.bubbletrouble.game.packets.action.PositionUpdateInfo;
 import com.bubbletrouble.game.packets.remove.ObjectRemoveInfo;
 import com.esotericsoftware.kryonet.Server;
 
-public class PlayServerState extends PlayState
+public class PlayServerState extends PlayState implements PacketsSender
 {
 	private Server server;
 	private BitmapFont font = new BitmapFont();
@@ -41,8 +41,8 @@ public class PlayServerState extends PlayState
 		object.update();
 		if (object.needsPositionUpdate())
 		{
-			PositionUpdateInfo info = producePositionUpdateInfo(object);
-			server.sendToAllTCP(info);
+			// PositionUpdateInfo info = producePositionUpdateInfo(object);
+			// server.sendToAllTCP(info);
 			object.informAboutPositionUpdate();
 		}
 	}
@@ -99,5 +99,29 @@ public class PlayServerState extends PlayState
 	public void addMessage(String message)
 	{
 		messages.add(message);
+	}
+
+	@Override
+	public void sendAction(Action action, long id)
+	{
+		ActionInfo actionInfo = new ActionInfo();
+		actionInfo.action = action;
+		actionInfo.targetId = id;
+		server.sendToAllTCP(actionInfo);
+	}
+
+	@Override
+	public void sendAction(CollisionAction action, long id)
+	{
+		CollisionActionInfo actionInfo = new CollisionActionInfo();
+		actionInfo.action = action;
+		actionInfo.targetId = id;
+		server.sendToAllTCP(actionInfo);
+	}
+
+	@Override
+	public void send(Object packet)
+	{
+		server.sendToAllTCP(packet);
 	}
 }

@@ -1,9 +1,9 @@
 package com.bubbletrouble.game.states.play;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
+import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.action.CollisionAction;
 
-public interface ClientPacketsSender
+public interface PacketsSender
 {
 	void sendAction(Action action, long id);
 

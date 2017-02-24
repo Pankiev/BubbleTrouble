@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
-import com.bubbletrouble.game.objects.Obstacle;
-import com.bubbletrouble.game.objects.bullet.UpdateAngleAction;
+import com.bubbletrouble.game.objects.obstacle.Obstacle;
 import com.bubbletrouble.game.objects.player.Player;
+import com.bubbletrouble.game.objects.player.UpdateAngleAction;
 import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionAction;
@@ -23,9 +23,8 @@ import com.esotericsoftware.kryonet.Client;
 
 import utils.Caster;
 
-public class PlayClientState extends PlayState
+public class PlayClientState extends PlayState implements PacketsSender
 {
-
 	Client client;
 
 	public PlayClientState(Client client)
@@ -57,6 +56,7 @@ public class PlayClientState extends PlayState
 		sendAction(action, client.getID());
 	}
 
+	@Override
 	public void sendAction(Action action, long id)
 	{
 		ActionInfo actionInfo = new ActionInfo();
@@ -65,6 +65,7 @@ public class PlayClientState extends PlayState
 		client.sendTCP(actionInfo);
 	}
 
+	@Override
 	public void sendAction(CollisionAction action, long id)
 	{
 		CollisionActionInfo actionInfo = new CollisionActionInfo();
@@ -104,6 +105,7 @@ public class PlayClientState extends PlayState
 		produceInfo.update(toUpdate);
 	}
 
+	@Override
 	public void send(Object info)
 	{
 		client.sendTCP(info);

@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.IdProvider;
 import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
+import com.bubbletrouble.game.states.play.GameObjectsContainer;
+import com.bubbletrouble.game.states.play.PacketsSender;
 import com.bubbletrouble.game.states.play.PlayState;
 
 public class Player extends MovableGameObject
@@ -44,9 +47,10 @@ public class Player extends MovableGameObject
 		setRotation(rotation);
 	}
 
-	public ProduceBulletInfo produceShootenBulletInfo(float mouseX, float mouseY)
+	private ProduceBulletInfo produceShootenBulletInfo(float mouseX, float mouseY)
 	{
 		ProduceBulletInfo info = new ProduceBulletInfo();
+		info.id = IdProvider.getNextId();
 		info.mouseX = mouseX;
 		info.mouseY = mouseY;
 		center = getSprite().getBoundingRectangle().getCenter(center);
@@ -71,14 +75,23 @@ public class Player extends MovableGameObject
 		return info;
 	}
 
-	public boolean canShoot()
+	public void shootIfCan(float mouseX, float mouseY)
 	{
-		if (shootingTime > shootingInterval)
-		{
-			shootingTime = 0.0f;
-			return true;
-		}
-		return false;
+		if (canShoot())
+			shoot(mouseX, mouseY);
+	}
+
+	private boolean canShoot()
+	{
+		return shootingTime > shootingInterval;
+	}
+
+	private void shoot(float mouseX, float mouseY)
+	{
+		shootingTime = 0.0f;
+		ProduceInfo info = produceShootenBulletInfo(mouseX, mouseY);
+		((PacketsSender) linkedState).send(info);
+		((GameObjectsContainer) linkedState).addObject(info.produce(linkedState), info.id);
 	}
 
 }

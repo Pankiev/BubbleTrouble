@@ -6,16 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.BiConsumer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 
-
-
-public abstract class PlayState extends State
+public abstract class PlayState extends State implements GameObjectsContainer
 {
 	Map<Long, GameObject> gameObjects = Collections.synchronizedMap(new TreeMap<Long, GameObject>());
 	private List<GameObject> garbage = new ArrayList<GameObject>();
@@ -23,17 +20,8 @@ public abstract class PlayState extends State
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		final SpriteBatch batch2 = batch;
-		gameObjects.forEach(new BiConsumer<Long, GameObject>()
-		{
-			@Override
-			public void accept(Long id, GameObject object)
-			{
-				object.render(batch2);
-			}
-		});
-		// for (GameObject object : gameObjects.values())
-		// object.render(batch);
+		for (GameObject object : gameObjects.values())
+			object.render(batch);
 	}
 
 	@Override
@@ -44,22 +32,26 @@ public abstract class PlayState extends State
 		clearGarbage();
 	}
 
+	@Override
 	public void removeObject(long id)
 	{
 		GameObject toRemove = gameObjects.get(id);
 		removeObject(toRemove);
 	}
 
+	@Override
 	public void removeObject(GameObject object)
 	{
-		gameObjects.remove(object.getId());
+		Object debug = gameObjects.remove(object.getId());
 	}
 
+	@Override
 	public GameObject getObject(long id)
 	{
 		return gameObjects.get(id);
 	}
 
+	@Override
 	public void addObject(GameObject gameObject, long id)
 	{
 		gameObjects.put(id, gameObject);
@@ -89,6 +81,7 @@ public abstract class PlayState extends State
 		return info;
 	}
 
+	@Override
 	public Collection<GameObject> getGameObjects()
 	{
 		return gameObjects.values();
@@ -96,6 +89,7 @@ public abstract class PlayState extends State
 
 	protected void clearGarbage()
 	{
+
 		while (!(garbage.isEmpty()))
 		{
 			GameObject trash = garbage.remove(0);

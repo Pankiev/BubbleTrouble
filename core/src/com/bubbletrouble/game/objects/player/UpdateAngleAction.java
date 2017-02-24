@@ -1,9 +1,8 @@
-package com.bubbletrouble.game.objects.bullet;
+package com.bubbletrouble.game.objects.player;
 
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
-import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.packets.action.Action;
 
 import utils.Caster;

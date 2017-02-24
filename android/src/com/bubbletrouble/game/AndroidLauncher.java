@@ -1,13 +1,9 @@
 package com.bubbletrouble.game;
 
-import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
-import com.esotericsoftware.kryonet.Client;
 
-import java.io.IOException;
+import android.os.Bundle;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

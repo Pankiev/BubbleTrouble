@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.objects;
+package com.bubbletrouble.game.objects.obstacle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

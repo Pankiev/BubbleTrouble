@@ -67,6 +67,11 @@ public class PlayInputHandler extends InputProcessorAdapter
 			request.mouseX = Gdx.input.getX();
 			request.mouseY = -Gdx.input.getY() + Gdx.graphics.getHeight();
 			playState.send(request);
+			// ProduceBulletInfo info = new ProduceBulletInfo();
+			// info.id = player.getId();
+			// info.mouseX = Gdx.input.getX();
+			// info.mouseY = -Gdx.input.getY() + Gdx.graphics.getHeight();
+			// playState.send(info);
 		}
 	}
 

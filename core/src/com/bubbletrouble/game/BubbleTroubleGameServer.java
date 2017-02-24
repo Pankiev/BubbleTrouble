@@ -10,24 +10,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.exception.GameException;
-import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
 import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
-import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
 import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
-import com.bubbletrouble.game.packets.requsets.ShootRequest;
+import com.bubbletrouble.game.packets.requsets.Request;
 import com.bubbletrouble.game.states.play.PlayServerState;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-
-import utils.Caster;
 
 public class BubbleTroubleGameServer extends ApplicationAdapter
 {
@@ -36,8 +32,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private Server server;
 	private PlayServerState playState;
-	private long nextObjectId = (long) Integer.MAX_VALUE + 1;
-	SpriteBatch batch;
+	private IdProvider idProvider = new IdProvider();
+	private SpriteBatch batch;
 
 	@Override
 	public void create()
@@ -110,7 +106,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		ObstacleProduceInfo addObstacle = new ObstacleProduceInfo();
 		addObstacle.x = randomPosition();
 		addObstacle.y = randomPosition();
-		addObstacle.id = getNextId();
+		addObstacle.id = IdProvider.getNextId();
 		server.sendToAllTCP(addObstacle);
 		playState.addObject(addObstacle);
 	}
@@ -118,14 +114,6 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	private int randomPosition()
 	{
 		return new Random().nextInt(500);
-	}
-
-	private long getNextId()
-	{
-		if (nextObjectId < 0)
-			nextObjectId = Integer.MAX_VALUE + 1;
-		nextObjectId++;
-		return nextObjectId;
 	}
 
 	private void userDisconnected(Connection connection)
@@ -150,25 +138,27 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 
 	private void produceInfoReceived(ProduceInfo produceInfo)
 	{
-		produceInfo.id = getNextId();
+		produceInfo.id = IdProvider.getNextId();
 		playState.addObject(produceInfo);
 		server.sendToAllTCP(produceInfo);
 	}
 
-	public void shootRequestReceived(ShootRequest shootRequest)
+	public void requestReceived(Request request)
 	{
-		Player player = Caster.cast(playState.getObject(shootRequest.id), Player.class);
-		if (player.canShoot())
-		{
-			ProduceBulletInfo info = player.produceShootenBulletInfo(shootRequest.mouseX, shootRequest.mouseY);
-			produceInfoReceived(info);
-		}
+		request.perform(playState);
+		// if (player.canShoot())
+		// {
+		// ProduceBulletInfo info =
+		// player.produceShootenBulletInfo(shootRequest.mouseX,
+		// shootRequest.mouseY);
+		// produceInfoReceived(info);
+		// }
 	}
 
 	private void obstacleRequestReceived()
 	{
 		ObstacleProduceInfo info = new ObstacleProduceInfo();
-		info.id = getNextId();
+		info.id = IdProvider.getNextId();
 		info.x = randomPosition();
 		info.y = randomPosition();
 		produceInfoReceived(info);
@@ -197,8 +187,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 				actionRecieved((CollisionActionInfo) object, connection);
 			else if (object instanceof ProduceInfo)
 				produceInfoReceived((ProduceInfo) object);
-			else if (object instanceof ShootRequest)
-				shootRequestReceived((ShootRequest) object);
+			else if (object instanceof Request)
+				requestReceived((Request) object);
 			else if (object instanceof AddObstacleRequest)
 				obstacleRequestReceived();
 			else if (object instanceof DisconnectRequest)
