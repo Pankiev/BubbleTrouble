@@ -133,7 +133,8 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		// ObjectRemoveInfo removePlayer = new ObjectRemoveInfo();
 		// removePlayer.id = connection.getID();
 		// server.sendToAllExceptTCP(connection.getID(), removePlayer);
-		// playState.removeObject(removePlayer.id);
+		if (playState.hasObject(connection.getID()))
+			playState.removeObject(connection.getID());
 		Log.info(">> Player disconnected " + connection.getID());
 		playState.addMessage(">> Player disconnected " + connection.getID());
 	}

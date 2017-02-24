@@ -108,4 +108,9 @@ public abstract class PlayState extends State
 		garbage.add(trash);
 	}
 
+	public boolean hasObject(long id)
+	{
+		return gameObjects.containsKey(id);
+	}
+
 }

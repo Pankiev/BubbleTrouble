@@ -50,8 +50,8 @@ public class PlayServerState extends PlayState
 	@Override
 	public void removeObject(GameObject object)
 	{
+		super.removeObject(object);
 		long id = object.getId();
-		gameObjects.remove(id);
 		server.sendToAllTCP(new ObjectRemoveInfo(id));
 	}
 
