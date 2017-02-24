@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.libgdxcommon;
+package com.bubbletrouble.game.libgdxcommon.input;
 
 import java.util.Collection;
 import java.util.Collections;

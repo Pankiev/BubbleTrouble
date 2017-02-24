@@ -1,6 +1,6 @@
 package utils;
 
-import com.bubbletrouble.game.libgdxcommon.GameException;
+import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 
 public class Sleeper
 {

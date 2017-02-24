@@ -1,8 +1,8 @@
 package com.bubbletrouble.game.states.play;
 
 import com.badlogic.gdx.Gdx;
-import com.bubbletrouble.game.libgdxcommon.InputProcessorAdapter;
-import com.bubbletrouble.game.libgdxcommon.KeyHandler;
+import com.bubbletrouble.game.libgdxcommon.input.InputProcessorAdapter;
+import com.bubbletrouble.game.libgdxcommon.input.KeyHandler;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.requsets.AddObstacleRequest;
 import com.bubbletrouble.game.server.packets.requsets.ShootRequest;

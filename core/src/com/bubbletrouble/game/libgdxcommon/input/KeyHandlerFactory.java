@@ -1,9 +1,10 @@
-package com.bubbletrouble.game.libgdxcommon;
+package com.bubbletrouble.game.libgdxcommon.input;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
 import com.badlogic.gdx.Input.Keys;
+import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 
 public class KeyHandlerFactory
 {

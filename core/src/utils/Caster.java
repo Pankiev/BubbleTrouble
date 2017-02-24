@@ -1,7 +1,7 @@
 package utils;
 
-import com.bubbletrouble.game.libgdxcommon.BadTypeException;
-import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.exception.BadTypeException;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.Player;
 
 public class Caster
@@ -13,4 +13,5 @@ public class Caster
 		Player player = (Player) gameObject;
 		return player;
 	}
+
 }

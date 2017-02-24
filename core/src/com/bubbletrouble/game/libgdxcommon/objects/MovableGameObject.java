@@ -1,11 +1,12 @@
-package com.bubbletrouble.game.libgdxcommon;
+package com.bubbletrouble.game.libgdxcommon.objects;
 
 import java.util.Collection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.bubbletrouble.game.libgdxcommon.State;
 
-public abstract class MovableGameObject extends ConnectionGameObject
+public abstract class MovableGameObject extends GameObject
 {
 	private float moveSpeed = 100.0f;
 

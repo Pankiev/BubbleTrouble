@@ -8,7 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
-import com.bubbletrouble.game.libgdxcommon.GameException;
+import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.PacketsRegisterer;
 import com.bubbletrouble.game.server.packets.action.ActionInfo;

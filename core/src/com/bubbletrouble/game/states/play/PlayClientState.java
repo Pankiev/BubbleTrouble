@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
-import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.Obstacle;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.action.Action;

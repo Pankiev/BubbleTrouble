@@ -1,6 +1,6 @@
 package com.bubbletrouble.game.server.packets.action;
 
-import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 
 public interface Action
 {

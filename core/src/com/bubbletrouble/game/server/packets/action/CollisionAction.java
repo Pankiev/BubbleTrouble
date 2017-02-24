@@ -2,7 +2,7 @@ package com.bubbletrouble.game.server.packets.action;
 
 import java.util.Collection;
 
-import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 
 public interface CollisionAction
 {

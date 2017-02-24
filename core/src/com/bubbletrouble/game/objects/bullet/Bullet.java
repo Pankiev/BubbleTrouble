@@ -1,12 +1,12 @@
-package com.bubbletrouble.game.objects;
+package com.bubbletrouble.game.objects.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
-import com.bubbletrouble.game.libgdxcommon.GameObject;
-import com.bubbletrouble.game.libgdxcommon.MovableGameObject;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
 import com.bubbletrouble.game.server.packets.produce.ProduceBulletInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.states.play.PlayState;
@@ -69,7 +69,7 @@ public class Bullet extends MovableGameObject
 		livingTime += Gdx.graphics.getDeltaTime();
 	}
 
-	private void updatePosition()
+	void updatePosition()
 	{
 		float angle = flyingVector.angle();
 		flyingVector.set(getMoveSpeed(), getMoveSpeed());

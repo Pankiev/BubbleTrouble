@@ -4,6 +4,7 @@ package com.bubbletrouble.game.libgdxcommon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.libgdxcommon.input.InputProcessorAdapter;
 
 public abstract class State
 {

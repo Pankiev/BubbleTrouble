@@ -1,7 +1,7 @@
 package com.bubbletrouble.game.server.packets.produce;
 
-import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.states.play.PlayState;
 

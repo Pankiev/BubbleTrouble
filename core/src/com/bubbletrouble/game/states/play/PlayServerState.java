@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.server.packets.action.Action;
 import com.bubbletrouble.game.server.packets.action.ActionInfo;
 import com.bubbletrouble.game.server.packets.action.CollisionAction;

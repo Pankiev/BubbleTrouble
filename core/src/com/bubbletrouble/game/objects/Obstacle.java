@@ -3,8 +3,8 @@ package com.bubbletrouble.game.objects;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.BubbleTroubleGameClient;
-import com.bubbletrouble.game.libgdxcommon.GameObject;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.server.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.server.packets.produce.ProduceInfo;
 

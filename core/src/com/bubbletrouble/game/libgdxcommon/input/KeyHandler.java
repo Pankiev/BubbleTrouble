@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.libgdxcommon;
+package com.bubbletrouble.game.libgdxcommon.input;
 
 public interface KeyHandler
 {

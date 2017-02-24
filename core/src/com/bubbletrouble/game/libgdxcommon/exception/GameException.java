@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.libgdxcommon;
+package com.bubbletrouble.game.libgdxcommon.exception;
 
 public class GameException extends RuntimeException
 {

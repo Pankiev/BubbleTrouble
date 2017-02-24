@@ -1,7 +1,7 @@
 package com.bubbletrouble.game.states.play.actions;
 
 import com.badlogic.gdx.math.Vector2;
-import com.bubbletrouble.game.libgdxcommon.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.Player;
 import com.bubbletrouble.game.server.packets.Registerable;
 import com.bubbletrouble.game.server.packets.action.Action;
