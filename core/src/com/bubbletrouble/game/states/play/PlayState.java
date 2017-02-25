@@ -17,6 +17,7 @@ public abstract class PlayState extends State implements GameObjectsContainer
 {
 	protected Map<Long, GameObject> gameObjects = Collections.synchronizedMap(new TreeMap<Long, GameObject>());
 	private List<GameObject> garbage = new ArrayList<GameObject>();
+	private Map<Long, GameObject> newObjects = new TreeMap<Long, GameObject>();
 
 	@Override
 	public void render(SpriteBatch batch)
@@ -46,13 +47,13 @@ public abstract class PlayState extends State implements GameObjectsContainer
 	@Override
 	public void addObject(GameObject gameObject, long id)
 	{
-		gameObjects.put(id, gameObject);
+		newObjects.put(id, gameObject);
 	}
 
 	public void addObject(ProduceInfo info)
 	{
 		GameObject object = info.produce(this);
-		gameObjects.put(info.id, object);
+		newObjects.put(info.id, object);
 	}
 
 	public void addObjects(ProduceInfo[] infos)
@@ -81,11 +82,8 @@ public abstract class PlayState extends State implements GameObjectsContainer
 
 	protected void clearGarbage()
 	{
-		while (!(garbage.isEmpty()))
-		{
-			GameObject trash = garbage.remove(0);
-			removeObject(trash);
-		}
+		garbage.forEach((trash) -> removeObject(trash));
+		garbage.clear();
 	}
 
 	public void addToGarbage(GameObject trash)
@@ -96,6 +94,12 @@ public abstract class PlayState extends State implements GameObjectsContainer
 	public boolean hasObject(long id)
 	{
 		return gameObjects.containsKey(id);
+	}
+
+	protected void pushNewObjects()
+	{
+		newObjects.forEach((id, object) -> gameObjects.put(id, object));
+		newObjects.clear();
 	}
 
 }

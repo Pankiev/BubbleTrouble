@@ -25,6 +25,7 @@ public abstract class GameObject extends Actor implements InfoProcucable, Client
 	protected GameObject(Texture lookout, State linkedState)
 	{
 		super();
+		setName("Unnamed");
 		this.linkedState = linkedState;
 		sprite = new Sprite(lookout);
 		sprite.setRegion(lookout);
@@ -34,7 +35,7 @@ public abstract class GameObject extends Actor implements InfoProcucable, Client
 
 	private boolean isColliding(GameObject gameObject)
 	{
-		return isColliding(gameObject.circle);
+		return gameObject.isCollidable() && isColliding(gameObject.circle);
 	}
 
 	public boolean isColliding(Circle circle)
@@ -224,9 +225,11 @@ public abstract class GameObject extends Actor implements InfoProcucable, Client
 		this.id = id;
 	}
 
-	protected Vector2 getCenter()
+	public Vector2 getCenter()
 	{
 		Vector2 center = new Vector2();
 		return getSprite().getBoundingRectangle().getCenter(center);
 	}
+
+	public abstract boolean isCollidable();
 }

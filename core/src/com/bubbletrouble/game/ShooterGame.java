@@ -9,7 +9,7 @@ import com.bubbletrouble.game.libgdxcommon.StateManager;
 
 public class ShooterGame extends ApplicationAdapter
 {
-	SpriteBatch batch;
+	protected SpriteBatch batch;
 	public static Assets assets;
 	public static StateManager states;
 
@@ -37,7 +37,7 @@ public class ShooterGame extends ApplicationAdapter
 
 	private void clearScreen()
 	{
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 

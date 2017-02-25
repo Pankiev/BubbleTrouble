@@ -1,13 +1,7 @@
 package com.bubbletrouble.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
 import com.bubbletrouble.game.kryonetcommon.Registerable;
-import com.bubbletrouble.game.libgdxcommon.Assets;
-import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
@@ -21,19 +15,14 @@ import com.esotericsoftware.kryonet.Listener;
 
 import utils.Sleeper;
 
-public class ShooterGameClient extends ApplicationAdapter
+public class ShooterGameClient extends ShooterGame
 {
-	SpriteBatch batch;
 	Client client = new Client();
-	public static Assets assets;
-	public static StateManager states;
 
 	@Override
 	public void create()
 	{
-		batch = new SpriteBatch();
-		assets = new Assets();
-		states = new StateManager();
+		super.create();
 		client = new Client();
 		client.start();
 		client.addListener(new ClientListener());
@@ -46,39 +35,6 @@ public class ShooterGameClient extends ApplicationAdapter
 		PacketsRegisterer.registerAllAnnotated(kryo, Registerable.class, "com.bubbletrouble.game.objects");
 		PacketsRegisterer.registerAllAnnotated(kryo, Registerable.class, "com.bubbletrouble.game.packets");
 		PacketsRegisterer.registerDefaults(kryo);
-	}
-
-	@Override
-	public void render()
-	{
-		clearScreen();
-		actualRender();
-		update();
-	}
-
-	private void update()
-	{
-		states.update();
-	}
-
-	private void clearScreen()
-	{
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	}
-
-	private void actualRender()
-	{
-		batch.begin();
-		states.render(batch);
-		batch.end();
-	}
-
-	@Override
-	public void dispose()
-	{
-		batch.dispose();
-		assets.dispose();
 	}
 
 	private PlayClientState findPlayState()

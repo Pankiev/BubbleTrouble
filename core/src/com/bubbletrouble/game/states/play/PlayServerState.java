@@ -31,13 +31,6 @@ public class PlayServerState extends PlayState implements PacketsSender
 	}
 
 	@Override
-	public void update()
-	{
-		gameObjects.forEach((id, object) -> object.serverUpdate());
-		clearGarbage();
-	}
-
-	@Override
 	public void removeObject(GameObject object)
 	{
 		super.removeObject(object);
@@ -46,7 +39,21 @@ public class PlayServerState extends PlayState implements PacketsSender
 	}
 
 	@Override
+	public void update()
+	{
+		gameObjects.forEach((id, object) -> object.serverUpdate());
+		clearGarbage();
+		pushNewObjects();
+	}
+
+	@Override
 	public void render(SpriteBatch batch)
+	{
+		super.render(batch);
+		renderMessages(batch);
+	}
+
+	private void renderMessages(SpriteBatch batch)
 	{
 		y = 20 * messages.size();
 		for (String message : messages)
@@ -54,7 +61,6 @@ public class PlayServerState extends PlayState implements PacketsSender
 			font.draw(batch, message, 20, y);
 			y -= 20;
 		}
-		super.render(batch);
 	}
 
 	public void makeAction(ActionInfo actionInfo)

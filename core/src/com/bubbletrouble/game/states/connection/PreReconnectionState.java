@@ -2,16 +2,17 @@ package com.bubbletrouble.game.states.connection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.esotericsoftware.kryonet.Client;
 
 public class PreReconnectionState extends State implements TextInputListener
 {
 	private Client client;
-	BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private BitmapFont font = ShooterGame.assets.getFont();
 	private ConnectionData data;
 	
 	public PreReconnectionState(Client client, ConnectionData data)
@@ -24,7 +25,7 @@ public class PreReconnectionState extends State implements TextInputListener
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		drawer.draw(batch, "You died, try again?", 20, 20);
+		font.draw(batch, "You died, try again?", 20, 20);
 	}
 
 	@Override

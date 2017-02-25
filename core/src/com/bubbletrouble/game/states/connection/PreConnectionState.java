@@ -3,17 +3,18 @@ package com.bubbletrouble.game.states.connection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.esotericsoftware.kryonet.Client;
 
 public class PreConnectionState extends State implements TextInputListener
 {
 	private Client client;
 	ConnectionData data = new ConnectionData();
-	BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private BitmapFont font = ShooterGame.assets.getFont();
 
 	public PreConnectionState(Client client)
 	{
@@ -24,8 +25,8 @@ public class PreConnectionState extends State implements TextInputListener
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		drawer.setColor(Color.GREEN);
-		drawer.draw(batch, "Please fill to connect", 20, 20);
+		font.setColor(Color.GREEN);
+		font.draw(batch, "Please fill to connect", 20, 20);
 	}
 
 	@Override
@@ -37,6 +38,7 @@ public class PreConnectionState extends State implements TextInputListener
 	public void input(String nickname)
 	{
 		data.setNickname(nickname);
+		client.setName(nickname);
 		ShooterGameClient.states.set(new ConnectionState(client, data));
 	}
 

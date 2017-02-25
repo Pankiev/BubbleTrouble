@@ -49,4 +49,10 @@ public class Obstacle extends GameObject
 		return 100;
 	}
 
+	@Override
+	public boolean isCollidable()
+	{
+		return true;
+	}
+
 }

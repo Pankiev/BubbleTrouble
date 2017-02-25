@@ -1,31 +1,24 @@
 package com.bubbletrouble.game.objects.player;
 
-import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.packets.action.Action;
 
-import utils.Caster;
-
 @Registerable
-public class UpdateAngleAction implements Action
+public class UpdateNameAction implements Action
 {
-	private float angleChange;
-	public Vector2 mousePosition = new Vector2();
+	public String name;
 
 	@Override
 	public void makeAction(GameObject gameObject)
 	{
-		Player player = Caster.cast(gameObject, Player.class);
-		player.updateAngleValue(mousePosition);
-		angleChange = player.getRotation();
+		gameObject.setName(name);
 	}
 
 	@Override
 	public void applyChangesToOther(GameObject gameObject)
 	{
-		gameObject.setRotation(angleChange);
+		makeAction(gameObject);
 	}
-
 
 }

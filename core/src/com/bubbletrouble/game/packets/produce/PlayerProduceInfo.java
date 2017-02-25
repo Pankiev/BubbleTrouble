@@ -21,8 +21,8 @@ public class PlayerProduceInfo extends ProduceInfo
 
 	public float x = 0;
 	public float y = 0;
-	public int points;
-	public String name;
+	public int points = 0;
+	public String name = "Unnamed";
 	
 	@Override
 	public GameObject produce(State linkedState)

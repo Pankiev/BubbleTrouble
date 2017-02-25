@@ -2,14 +2,9 @@ package com.bubbletrouble.game;
 
 import java.io.IOException;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.kryonetcommon.IdProvider;
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
 import com.bubbletrouble.game.kryonetcommon.Registerable;
-import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
@@ -25,28 +20,25 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
-public class ShooterGameServer extends ApplicationAdapter
+public class ShooterGameServer extends ShooterGame
 {
 	public static final int tcpPort = 8000;
 	public static final int udpPort = 8001;
 
 	private Server server;
 	private PlayServerState playState;
-	private SpriteBatch batch;
 
 	@Override
 	public void create()
 	{
-		batch = new SpriteBatch();
-		ShooterGameClient.assets = new Assets();
-		ShooterGameClient.assets.loadAll();
+		super.create();
 		server = new Server();
 		registerPackets(server.getKryo());
 		server.start();
 		tryBindingServer();
 		addListeners();
 		playState = new PlayServerState(server);
-
+		states.push(playState);
 	}
 
 	private void registerPackets(Kryo kryo)
@@ -72,28 +64,14 @@ public class ShooterGameServer extends ApplicationAdapter
 		server.addListener(new ServerListener());
 	}
 
-	@Override
-	public void render()
-	{
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		playState.render(batch);
-		batch.end();
-		update();
-	}
-
-	private void update()
-	{
-		playState.update();
-	}
-
 	private void userConnected(Connection connection)
 	{
 		Integer id = connection.getID();
 		server.sendToTCP(id, playState.getGameObjectsInfo());
-		server.sendToAllExceptTCP(id, new PlayerProduceInfo(id));
-		playState.addObject(new PlayerProduceInfo(id));
+		PlayerProduceInfo info = new PlayerProduceInfo(id);
+		server.sendToAllExceptTCP(id, info);
+		playState.addObject(info);
+
 		Log.info(">> Player added " + connection.getID());
 		playState.addMessage(">> Player added " + connection.getID());
 		playState.addRandomObstacle();

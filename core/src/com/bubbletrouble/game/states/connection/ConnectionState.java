@@ -5,11 +5,12 @@ import java.io.IOException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.ShooterGameServer;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
@@ -22,14 +23,14 @@ public class ConnectionState extends State implements TextInputListener
 	private float connectingTime = 0.0f;
 	private String messageToUser = "";
 	private boolean isConnecting = false;
-	private BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private BitmapFont font = ShooterGame.assets.getFont();
 	private ConnectionData data;
 
 	public ConnectionState(Client client, ConnectionData data)
 	{
 		this.client = client;
 		this.data = data;
-		drawer.setColor(new Color(0, 0, 0, 0.8f));
+		font.setColor(new Color(0, 0, 0, 0.8f));
 		askForIp();
 	}
 
@@ -77,7 +78,7 @@ public class ConnectionState extends State implements TextInputListener
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		drawer.draw(batch, messageToUser, 20, 20);
+		font.draw(batch, messageToUser, 20, 20);
 	}
 
 	@Override

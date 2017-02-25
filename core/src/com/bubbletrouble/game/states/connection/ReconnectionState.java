@@ -3,24 +3,25 @@ package com.bubbletrouble.game.states.connection;
 import java.io.IOException;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
-import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
 public class ReconnectionState extends State
 {
 	private Client client;
-	BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private BitmapFont font = ShooterGame.assets.getFont();
 	private ConnectionData data;
 
 	public ReconnectionState(Client client, ConnectionData data)
 	{
 		this.client = client;
 		this.data = data;
-		drawer.setColor(new Color(0, 0, 0, 0.8f));
+		font.setColor(new Color(0, 0, 0, 0.8f));
 	}
 
 	private void tryReconnecting()
@@ -36,7 +37,7 @@ public class ReconnectionState extends State
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		drawer.draw(batch, "Reconnecting...", 20, 20);
+		font.draw(batch, "Reconnecting...", 20, 20);
 	}
 
 	@Override

@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.bubbletrouble.game.ShooterGameClient;
+import com.bubbletrouble.game.kryonetcommon.IdProvider;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
+import com.bubbletrouble.game.objects.explosion.Explosion;
 import com.bubbletrouble.game.objects.player.AddPointsAction;
 import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.packets.action.Action;
@@ -76,6 +78,12 @@ public class Bullet extends MovableGameObject
 	{
 		removeFromGame(this);
 		removeFromGame(collision);
+		Vector2 collisionCenter = collision.getCenter();
+		Explosion explosion = new Explosion(linkedState);
+		explosion.setPosition(collisionCenter.x, collisionCenter.y);
+		explosion.setId(IdProvider.getNextId());
+		((GameObjectsContainer) linkedState).addObject(explosion, explosion.getId());
+		((PacketsSender) linkedState).send(explosion.produceInfo());
 
 		AddPointsAction addPointsAction = new AddPointsAction();
 		addPointsAction.pointsToAdd = collision.getPointsValue();
@@ -119,6 +127,12 @@ public class Bullet extends MovableGameObject
 		info.y = getY();
 		info.shooterId = shooterId;
 		return info;
+	}
+
+	@Override
+	public boolean isCollidable()
+	{
+		return false;
 	}
 
 }
