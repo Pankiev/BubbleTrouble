@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 
-public class BubbleTroubleGame extends ApplicationAdapter
+public class ShooterGame extends ApplicationAdapter
 {
 	SpriteBatch batch;
 	public static Assets assets;

@@ -2,7 +2,7 @@ package com.bubbletrouble.game.objects.obstacle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
@@ -13,15 +13,18 @@ public class Obstacle extends GameObject
 
 	public Obstacle(State linkedState, long id)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("red.gif"), linkedState);
+		super((Texture) ShooterGameClient.assets.get("red.gif"), linkedState);
 		setId(id);
 	}
 
 	@Override
-	public void update()
+	public void clientUpdate()
 	{
-		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public void serverUpdate()
+	{
 	}
 
 	@Override
@@ -38,6 +41,12 @@ public class Obstacle extends GameObject
 		info.y = getY();
 		info.id = getId();
 		return info;
+	}
+
+	@Override
+	public int getPointsValue()
+	{
+		return 100;
 	}
 
 }

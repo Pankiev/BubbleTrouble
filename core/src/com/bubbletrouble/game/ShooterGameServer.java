@@ -1,60 +1,50 @@
 package com.bubbletrouble.game;
 
 import java.io.IOException;
-import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.kryonetcommon.IdProvider;
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
 import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
 import com.bubbletrouble.game.packets.requsets.Request;
 import com.bubbletrouble.game.states.play.PlayServerState;
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
-public class BubbleTroubleGameServer extends ApplicationAdapter
+public class ShooterGameServer extends ApplicationAdapter
 {
 	public static final int tcpPort = 8000;
 	public static final int udpPort = 8001;
 
 	private Server server;
 	private PlayServerState playState;
-	private IdProvider idProvider = new IdProvider();
 	private SpriteBatch batch;
 
 	@Override
 	public void create()
 	{
 		batch = new SpriteBatch();
-		BubbleTroubleGameClient.assets = new Assets();
-		BubbleTroubleGameClient.assets.loadAll();
+		ShooterGameClient.assets = new Assets();
+		ShooterGameClient.assets.loadAll();
 		server = new Server();
-		registerPackets();
+		PacketsRegisterer.registerPackets(server.getKryo());
 		server.start();
 		tryBindingServer();
 		addListeners();
 		playState = new PlayServerState(server);
 
-	}
-
-	private void registerPackets()
-	{
-		Kryo kryo = server.getKryo();
-		PacketsRegisterer.registerAllAnnotated(kryo);
-		PacketsRegisterer.registerDefaults(kryo);
 	}
 
 	private void tryBindingServer()
@@ -97,23 +87,7 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		playState.addObject(new PlayerProduceInfo(id));
 		Log.info(">> Player added " + connection.getID());
 		playState.addMessage(">> Player added " + connection.getID());
-
-		addRandomObstacle();
-	}
-
-	private void addRandomObstacle()
-	{
-		ObstacleProduceInfo addObstacle = new ObstacleProduceInfo();
-		addObstacle.x = randomPosition();
-		addObstacle.y = randomPosition();
-		addObstacle.id = IdProvider.getNextId();
-		server.sendToAllTCP(addObstacle);
-		playState.addObject(addObstacle);
-	}
-
-	private int randomPosition()
-	{
-		return new Random().nextInt(500);
+		playState.addRandomObstacle();
 	}
 
 	private void userDisconnected(Connection connection)
@@ -124,13 +98,13 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		playState.addMessage(">> Player disconnected " + connection.getID());
 	}
 
-	private void actionRecieved(ActionInfo actionInfo, Connection source)
+	private void actionRecieved(ActionInfo actionInfo)
 	{
 		playState.makeAction(actionInfo);
 		server.sendToAllTCP(actionInfo);
 	}
 
-	private void actionRecieved(CollisionActionInfo actionInfo, Connection source)
+	private void actionRecieved(CollisionActionInfo actionInfo)
 	{
 		playState.makeAction(actionInfo);
 		server.sendToAllTCP(actionInfo);
@@ -146,22 +120,11 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 	public void requestReceived(Request request)
 	{
 		request.perform(playState);
-		// if (player.canShoot())
-		// {
-		// ProduceBulletInfo info =
-		// player.produceShootenBulletInfo(shootRequest.mouseX,
-		// shootRequest.mouseY);
-		// produceInfoReceived(info);
-		// }
 	}
 
 	private void obstacleRequestReceived()
 	{
-		ObstacleProduceInfo info = new ObstacleProduceInfo();
-		info.id = IdProvider.getNextId();
-		info.x = randomPosition();
-		info.y = randomPosition();
-		produceInfoReceived(info);
+		playState.addRandomObstacle();
 	}
 
 	private class ServerListener extends Listener
@@ -182,9 +145,9 @@ public class BubbleTroubleGameServer extends ApplicationAdapter
 		public void received(Connection connection, Object object)
 		{
 			if (object instanceof ActionInfo)
-				actionRecieved((ActionInfo) object, connection);
+				actionRecieved((ActionInfo) object);
 			else if (object instanceof CollisionActionInfo)
-				actionRecieved((CollisionActionInfo) object, connection);
+				actionRecieved((CollisionActionInfo) object);
 			else if (object instanceof ProduceInfo)
 				produceInfoReceived((ProduceInfo) object);
 			else if (object instanceof Request)

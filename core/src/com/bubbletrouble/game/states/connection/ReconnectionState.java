@@ -3,22 +3,22 @@ package com.bubbletrouble.game.states.connection;
 import java.io.IOException;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
 public class ReconnectionState extends State
 {
 	private Client client;
-	private BitmapFont font = BubbleTroubleGameClient.assets.getFont();
+	BitmapStringDrawer drawer = new BitmapStringDrawer();
 
 	public ReconnectionState(Client client)
 	{
 		this.client = client;
-		font.setColor(new Color(0, 0, 0, 0.8f));
+		drawer.setColor(new Color(0, 0, 0, 0.8f));
 	}
 
 	private void tryReconnecting()
@@ -34,7 +34,7 @@ public class ReconnectionState extends State
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		font.draw(batch, "Reconnecting...", 20, 20);
+		drawer.draw(batch, "Reconnecting...", 20, 20);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class ReconnectionState extends State
 	{
 		tryReconnecting();
 		if (client.isConnected())
-			BubbleTroubleGameClient.states.set(new PlayClientState(client));
+			ShooterGameClient.states.set(new PlayClientState(client));
 	}
 
 }

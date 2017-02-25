@@ -2,16 +2,19 @@ package com.bubbletrouble.game.states.play;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.kryonetcommon.IdProvider;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionAction;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.packets.action.PositionUpdateInfo;
+import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.packets.remove.ObjectRemoveInfo;
+import com.bubbletrouble.game.states.interfaces.PacketsSender;
 import com.esotericsoftware.kryonet.Server;
 
 public class PlayServerState extends PlayState implements PacketsSender
@@ -30,21 +33,8 @@ public class PlayServerState extends PlayState implements PacketsSender
 	@Override
 	public void update()
 	{
-		for (GameObject object : gameObjects.values())
-			updateObject(object);
-
+		gameObjects.forEach((id, object) -> object.serverUpdate());
 		clearGarbage();
-	}
-
-	private void updateObject(GameObject object)
-	{
-		object.update();
-		if (object.needsPositionUpdate())
-		{
-			// PositionUpdateInfo info = producePositionUpdateInfo(object);
-			// server.sendToAllTCP(info);
-			object.informAboutPositionUpdate();
-		}
 	}
 
 	@Override
@@ -53,15 +43,6 @@ public class PlayServerState extends PlayState implements PacketsSender
 		super.removeObject(object);
 		long id = object.getId();
 		server.sendToAllTCP(new ObjectRemoveInfo(id));
-	}
-
-	private PositionUpdateInfo producePositionUpdateInfo(GameObject object)
-	{
-		PositionUpdateInfo info = new PositionUpdateInfo();
-		info.id = object.getId();
-		info.x = object.getX();
-		info.y = object.getY();
-		return info;
 	}
 
 	@Override
@@ -124,4 +105,21 @@ public class PlayServerState extends PlayState implements PacketsSender
 	{
 		server.sendToAllTCP(packet);
 	}
+
+	public void addRandomObstacle()
+	{
+		ObstacleProduceInfo addObstacle = new ObstacleProduceInfo();
+		addObstacle.x = randomPosition();
+		addObstacle.y = randomPosition();
+		addObstacle.id = IdProvider.getNextId();
+		server.sendToAllTCP(addObstacle);
+		addObject(addObstacle);
+	}
+
+	private int randomPosition()
+	{
+		return new Random().nextInt(500);
+	}
+
+
 }

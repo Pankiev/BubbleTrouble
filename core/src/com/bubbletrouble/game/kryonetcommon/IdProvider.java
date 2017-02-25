@@ -1,4 +1,4 @@
-package com.bubbletrouble.game;
+package com.bubbletrouble.game.kryonetcommon;
 
 public class IdProvider
 {

@@ -3,15 +3,19 @@ package com.bubbletrouble.game.objects.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
+import com.bubbletrouble.game.objects.player.AddPointsAction;
+import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.produce.ProduceBulletInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
-import com.bubbletrouble.game.states.play.GameObjectsContainer;
-import com.bubbletrouble.game.states.play.PacketsSender;
+import com.bubbletrouble.game.states.interfaces.GameObjectsContainer;
+import com.bubbletrouble.game.states.interfaces.PacketsSender;
+
+import utils.Caster;
 
 public class Bullet extends MovableGameObject
 {
@@ -19,11 +23,13 @@ public class Bullet extends MovableGameObject
 	private final float MAX_LIVE_TIME = 2.0f;
 	private float livingTime = 0.0f;
 	private Vector2 mousePosition;
+	private long shooterId;
 
-	public Bullet(State linkedState, Vector2 mousePosition, Vector2 sourcePosition)
+	public Bullet(State linkedState, Vector2 mousePosition, Vector2 sourcePosition, long shooterId)
 	{
-		super((Texture) BubbleTroubleGameClient.assets.get("bullet.png"), linkedState);
+		super((Texture) ShooterGameClient.assets.get("bullet.png"), linkedState);
 		this.mousePosition = mousePosition;
+		this.shooterId = shooterId;
 		setPosition(sourcePosition.x, sourcePosition.y);
 		setMoveSpeed(6.5f);
 		flyingVector = sourcePosition.sub(mousePosition);
@@ -37,20 +43,24 @@ public class Bullet extends MovableGameObject
 	}
 
 	@Override
-	public void update()
+	public void serverUpdate()
 	{
 		updateLivingTime();
-		// updatePosition();
 		Action flightAction = new FlightAction();
 		flightAction.makeAction(this);
 		((PacketsSender) linkedState).sendAction(flightAction, getId());
-		needsPositionUpdate = true;
 		handlePossibleCollision();
 		if (shouldBeDeleted())
-			removeFromPlayState(this);
+			removeFromGame(this);
 	}
 
-	private void removeFromPlayState(GameObject object)
+	@Override
+	public void clientUpdate()
+	{
+
+	}
+
+	private void removeFromGame(GameObject object)
 	{
 		((GameObjectsContainer) linkedState).addToGarbage(object);
 	}
@@ -64,10 +74,20 @@ public class Bullet extends MovableGameObject
 
 	private void handleCollision(GameObject collision)
 	{
-		removeFromPlayState(this);
-		removeFromPlayState(collision);
+		removeFromGame(this);
+		removeFromGame(collision);
+
+		AddPointsAction addPointsAction = new AddPointsAction();
+		addPointsAction.pointsToAdd = collision.getPointsValue();
+		Player player = getShooter();
+		addPointsAction.makeAction(player);
+		((PacketsSender) linkedState).sendAction(addPointsAction, shooterId);
 	}
 
+	private Player getShooter()
+	{
+		return Caster.cast(((GameObjectsContainer) linkedState).getObject(shooterId), Player.class);
+	}
 
 	private void updateLivingTime()
 	{
@@ -86,8 +106,8 @@ public class Bullet extends MovableGameObject
 	private boolean shouldBeDeleted()
 	{
 		return livingTime > MAX_LIVE_TIME;
-
 	}
+
 	@Override
 	public ProduceInfo produceInfo()
 	{
@@ -97,6 +117,7 @@ public class Bullet extends MovableGameObject
 		info.mouseY = mousePosition.y;
 		info.x = getX();
 		info.y = getY();
+		info.shooterId = shooterId;
 		return info;
 	}
 

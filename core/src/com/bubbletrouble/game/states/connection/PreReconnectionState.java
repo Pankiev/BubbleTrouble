@@ -1,39 +1,46 @@
 package com.bubbletrouble.game.states.connection;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.esotericsoftware.kryonet.Client;
 
-public class PreReconnectionState extends State
+public class PreReconnectionState extends State implements TextInputListener
 {
 	private Client client;
-	private BitmapFont font = BubbleTroubleGameClient.assets.getFont();
-	Label label = new Label("Some text", new LabelStyle(font, new Color(0.2f, 0.2f, 0.2f, 0.8f)));
+	BitmapStringDrawer drawer = new BitmapStringDrawer();
 	
 	public PreReconnectionState(Client client)
 	{
-		label.setText("Some Text");
-		label.setBounds(10, 10, 100, 20);
 		this.client = client;
+		Gdx.input.getTextInput(this, "You died, try again?", "y", "");
 	}
 
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		// TextButton button = new TextButton("Play again", new Skin());
-		// button.draw(batch, 1.0f);
-		label.draw(batch, 1.0f);
+		drawer.draw(batch, "You died, try again?", 20, 20);
 	}
 
 	@Override
 	public void update()
 	{
+	}
 
+	@Override
+	public void input(String text)
+	{
+		if (text.equals("y"))
+			ShooterGameClient.states.set(new ReconnectionState(client));
+	}
+
+	@Override
+	public void canceled()
+	{
+		ShooterGameClient.states.pop();
 	}
 
 }

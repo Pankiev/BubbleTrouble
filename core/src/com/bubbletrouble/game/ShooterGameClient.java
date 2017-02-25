@@ -9,22 +9,17 @@ import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.packets.action.PositionUpdateInfo;
-import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
-import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.remove.ObjectRemoveInfo;
 import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.play.PlayClientState;
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.minlog.Log;
 
 import utils.Sleeper;
 
-public class BubbleTroubleGameClient extends ApplicationAdapter
+public class ShooterGameClient extends ApplicationAdapter
 {
 	SpriteBatch batch;
 	Client client = new Client();
@@ -40,15 +35,8 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		client = new Client();
 		client.start();
 		client.addListener(new ClientListener());
-		registerPackets();
+		PacketsRegisterer.registerPackets(client.getKryo());
 		states.push(new ConnectionState(client));
-	}
-
-	private void registerPackets()
-	{
-		Kryo kryo = client.getKryo();
-		PacketsRegisterer.registerAllAnnotated(kryo);
-		PacketsRegisterer.registerDefaults(kryo);
 	}
 
 	@Override
@@ -94,6 +82,7 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 		PlayClientState playState = findPlayState();
 		if (playState != null)
 			playState.applyChanges(actionInfo);
+
 	}
 
 	private void actionRecieved(CollisionActionInfo actionInfo)
@@ -113,27 +102,11 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				Sleeper.sleep(10);
 				playState = findPlayState();
 			}
-			if (object instanceof PlayerProduceInfo[])
-			{
-				PlayerProduceInfo[] playerInfo = (PlayerProduceInfo[]) object;
 
-
-				playState.addObjects(playerInfo);
-			} 
-			else if (object instanceof PlayerProduceInfo)
-			{
-				PlayerProduceInfo playerInfo = (PlayerProduceInfo) object;
-				playState.addObject(playerInfo);
-			} 
-			else if(object instanceof ObjectRemoveInfo)
+			if (object instanceof ObjectRemoveInfo)
 			{
 				ObjectRemoveInfo playerInfo = (ObjectRemoveInfo) object;
 				playState.removeObject(playerInfo.id);
-			}
-			else if (object instanceof ObstacleProduceInfo)
-			{
-				playState.addObstacle((ObstacleProduceInfo) object);
-				Log.info("Obstacle added");
 			}
 			else if(object instanceof ProduceInfo)
 			{
@@ -149,11 +122,6 @@ public class BubbleTroubleGameClient extends ApplicationAdapter
 				actionRecieved((ActionInfo) object);
 			else if (object instanceof CollisionActionInfo)
 				actionRecieved((CollisionActionInfo) object);
-			else if (object instanceof PositionUpdateInfo)
-			{
-				PositionUpdateInfo produceInfo = (PositionUpdateInfo) object;
-				playState.update(produceInfo);
-			}
 		}
 
 	}

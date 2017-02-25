@@ -1,20 +1,21 @@
 package com.bubbletrouble.game.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 
 public class ExitingState extends State
 {
 	private int timeToClose;
-	private BitmapFont font = BubbleTroubleGameClient.assets.getFont();
+	BitmapStringDrawer drawer = new BitmapStringDrawer();
 
 	public ExitingState(int timeOut)
 	{
 		timeToClose = timeOut;
-		font.setColor(0, 0, 0, 0.8f);
+		drawer.setColor(new Color(0, 0, 0, 0.8f));
 	}
 
 	@Override
@@ -22,7 +23,7 @@ public class ExitingState extends State
 	{
 		float secondsToClose = (float) timeToClose / 1000.0f;
 		String message = String.valueOf(secondsToClose) + " seconds left...";
-		font.draw(batch, message, 20, 20);
+		drawer.draw(batch, message, 20, 20);
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class ExitingState extends State
 		timeToClose -= Gdx.graphics.getDeltaTime() * 1000;
 		if (timeToClose < 0.0f)
 		{
-			BubbleTroubleGameClient.states.pop();
+			ShooterGameClient.states.pop();
 		}
 	}
 

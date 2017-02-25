@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
+import com.bubbletrouble.game.libgdxcommon.objects.MovableGameObject;
 import com.bubbletrouble.game.packets.action.CollisionAction;
 
 import utils.Caster;
@@ -16,7 +17,7 @@ public class MoveLeftAction implements CollisionAction
 
 	public void makeAction(GameObject gameObject, Collection<GameObject> collisions)
 	{
-		Player player = Caster.cast(gameObject, Player.class);
+		MovableGameObject player = Caster.cast(gameObject, Player.class);
 		player.moveLeft(collisions);
 		xChange = player.getX();
 		yChange = player.getY();

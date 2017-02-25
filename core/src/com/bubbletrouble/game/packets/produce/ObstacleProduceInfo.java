@@ -1,9 +1,11 @@
 package com.bubbletrouble.game.packets.produce;
 
+import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.obstacle.Obstacle;
 
+@Registerable
 public class ObstacleProduceInfo extends ProduceInfo
 {
 	public float x;

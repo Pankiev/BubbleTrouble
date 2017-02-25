@@ -9,16 +9,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.objects.ClientServerGameObject;
 import com.bubbletrouble.game.packets.produce.InfoProcucable;
 
-public abstract class GameObject extends Actor implements InfoProcucable
+public abstract class GameObject extends Actor implements InfoProcucable, ClientServerGameObject, ScoreValue
 {
 	private Sprite sprite;
 	private long id;
 	private Circle circle = new Circle();
-	protected boolean needsPositionUpdate = false;
 	protected State linkedState;
 
 	protected GameObject(Texture lookout, State linkedState)
@@ -30,8 +31,6 @@ public abstract class GameObject extends Actor implements InfoProcucable
 		super.setSize(lookout.getWidth(), lookout.getHeight());
 		circle.setRadius((lookout.getWidth() + lookout.getHeight()) / 4);
 	}
-
-	public abstract void update();
 
 	private boolean isColliding(GameObject gameObject)
 	{
@@ -225,13 +224,9 @@ public abstract class GameObject extends Actor implements InfoProcucable
 		this.id = id;
 	}
 
-	public boolean needsPositionUpdate()
+	protected Vector2 getCenter()
 	{
-		return needsPositionUpdate;
-	}
-
-	public void informAboutPositionUpdate()
-	{
-		needsPositionUpdate = false;
+		Vector2 center = new Vector2();
+		return getSprite().getBoundingRectangle().getCenter(center);
 	}
 }

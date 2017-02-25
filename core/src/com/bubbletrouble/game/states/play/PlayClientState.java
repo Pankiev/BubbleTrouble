@@ -1,24 +1,20 @@
 package com.bubbletrouble.game.states.play;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
+import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.obstacle.Obstacle;
 import com.bubbletrouble.game.objects.player.Player;
-import com.bubbletrouble.game.objects.player.UpdateAngleAction;
 import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionAction;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
-import com.bubbletrouble.game.packets.action.PositionUpdateInfo;
 import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
-import com.bubbletrouble.game.states.connection.ConnectionState;
 import com.bubbletrouble.game.states.connection.PreReconnectionState;
+import com.bubbletrouble.game.states.interfaces.PacketsSender;
 import com.esotericsoftware.kryonet.Client;
 
 import utils.Caster;
@@ -44,17 +40,16 @@ public class PlayClientState extends PlayState implements PacketsSender
 	@Override
 	public void update()
 	{
+		gameObjects.forEach((id, object) -> object.clientUpdate());
 		if (!client.isConnected())
 		{
-			BubbleTroubleGameClient.states.set(new ConnectionState(client));
+			ShooterGameClient.states.set(new PreReconnectionState(client));
 			return;
 		}
 
 		inputHandler.process();
-		UpdateAngleAction action = new UpdateAngleAction();
-		action.mousePosition = new Vector2(Gdx.input.getX(), -Gdx.input.getY() + Gdx.graphics.getHeight());
-		sendAction(action, client.getID());
 	}
+
 
 	@Override
 	public void sendAction(Action action, long id)
@@ -99,22 +94,16 @@ public class PlayClientState extends PlayState implements PacketsSender
 		actionInfo.action.applyChangesToOther(object);
 	}
 
-	public void update(PositionUpdateInfo produceInfo)
-	{
-		GameObject toUpdate = getObject(produceInfo.id);
-		produceInfo.update(toUpdate);
-	}
-
 	@Override
 	public void send(Object info)
 	{
 		client.sendTCP(info);
 	}
 
-	public Player getItsOwnPlayer()
+	public GameObject getItsOwnPlayer()
 	{
 		GameObject object = gameObjects.get((long) client.getID());
-		Player player = Caster.cast(object, Player.class);
+		GameObject player = Caster.cast(object, Player.class);
 		return player;
 	}
 
@@ -124,7 +113,7 @@ public class PlayClientState extends PlayState implements PacketsSender
 		if (object.getId() == client.getID())
 		{
 			client.sendTCP(new DisconnectRequest());
-			BubbleTroubleGameClient.states.set(new PreReconnectionState(client));
+			ShooterGameClient.states.set(new PreReconnectionState(client));
 		} else
 			super.removeObject(object);
 	}

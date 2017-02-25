@@ -3,11 +3,11 @@ package com.bubbletrouble.game.states.play;
 import com.badlogic.gdx.Gdx;
 import com.bubbletrouble.game.libgdxcommon.input.InputProcessorAdapter;
 import com.bubbletrouble.game.libgdxcommon.input.KeyHandler;
+import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.player.MoveDownAction;
 import com.bubbletrouble.game.objects.player.MoveLeftAction;
 import com.bubbletrouble.game.objects.player.MoveRightAction;
 import com.bubbletrouble.game.objects.player.MoveUpAction;
-import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
 import com.bubbletrouble.game.packets.requsets.ShootRequest;
 
@@ -61,17 +61,12 @@ public class PlayInputHandler extends InputProcessorAdapter
 	{
 		public void handle()
 		{
-			Player player = playState.getItsOwnPlayer();
+			GameObject player = playState.getItsOwnPlayer();
 			ShootRequest request = new ShootRequest();
 			request.id = player.getId();
 			request.mouseX = Gdx.input.getX();
 			request.mouseY = -Gdx.input.getY() + Gdx.graphics.getHeight();
 			playState.send(request);
-			// ProduceBulletInfo info = new ProduceBulletInfo();
-			// info.id = player.getId();
-			// info.mouseX = Gdx.input.getX();
-			// info.mouseY = -Gdx.input.getY() + Gdx.graphics.getHeight();
-			// playState.send(info);
 		}
 	}
 

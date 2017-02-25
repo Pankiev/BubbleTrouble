@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,9 +17,18 @@ public class PacketsRegisterer
 	private final static Class<? extends Annotation> defaultAnnotationType = Registerable.class;
 	private final static Class<? extends Annotation> defaultAnnotationBase = RegisterableBase.class;
 
-	public static void registerAllAnnotated(Kryo destination)
+	public static Kryo registerPackets(Kryo destination)
+	{
+		destination = registerAllAnnotated(destination, defaultAnnotationType, "com.bubbletrouble.game.objects");
+		destination = registerAllAnnotated(destination, defaultAnnotationType, "com.bubbletrouble.game.packets");
+		destination = registerDefaults(destination);
+		return destination;
+	}
+
+	public static Kryo registerAllAnnotated(Kryo destination)
 	{
 		destination = registerAllAnnotated(destination, defaultAnnotationType);
+		return destination;
 	}
 
 	public static Kryo registerAllAnnotated(Kryo destination, Class<? extends Annotation> annotationType)
@@ -68,15 +76,13 @@ public class PacketsRegisterer
 	private static List<Class<?>> sort(Set<Class<?>> registerableTypes)
 	{
 		List<Class<?>> sorted = new ArrayList<Class<?>>(registerableTypes);
-		Collections.sort(sorted, new Comparator<Class<?>>()
+		Collections.sort(sorted, (firstClazz, secondClazz) ->
 		{
-			public int compare(Class<?> o1, Class<?> o2)
-			{
-				String name1 = o1.getSimpleName();
-				String name2 = o2.getSimpleName();
-				return name1.compareTo(name2);
-			}
+			String firstClassName = firstClazz.getSimpleName();
+			String secondClassName = secondClazz.getSimpleName();
+			return firstClassName.compareTo(secondClassName);
 		});
+
 		return sorted;
 	}
 

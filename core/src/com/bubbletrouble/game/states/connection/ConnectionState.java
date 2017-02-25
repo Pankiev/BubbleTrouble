@@ -5,11 +5,11 @@ import java.io.IOException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bubbletrouble.game.BubbleTroubleGameClient;
-import com.bubbletrouble.game.BubbleTroubleGameServer;
+import com.bubbletrouble.game.ShooterGameClient;
+import com.bubbletrouble.game.ShooterGameServer;
 import com.bubbletrouble.game.libgdxcommon.State;
+import com.bubbletrouble.game.libgdxcommon.stringdraw.BitmapStringDrawer;
 import com.bubbletrouble.game.states.play.PlayClientState;
 import com.esotericsoftware.kryonet.Client;
 
@@ -22,12 +22,12 @@ public class ConnectionState extends State implements TextInputListener
 	private float connectingTime = 0.0f;
 	private String messageToUser = "";
 	private boolean isConnecting = false;
-	BitmapFont font = BubbleTroubleGameClient.assets.getFont();
+	BitmapStringDrawer drawer = new BitmapStringDrawer();
 
 	public ConnectionState(Client client)
 	{
 		this.client = client;
-		font.setColor(new Color(0, 0, 0, 0.8f));
+		drawer.setColor(new Color(0, 0, 0, 0.8f));
 		askForIp();
 	}
 
@@ -51,7 +51,7 @@ public class ConnectionState extends State implements TextInputListener
 
 	private void connect(String connectionIp) throws IOException
 	{
-		client.connect(15000, connectionIp, BubbleTroubleGameServer.tcpPort, BubbleTroubleGameServer.udpPort);
+		client.connect(15000, connectionIp, ShooterGameServer.tcpPort, ShooterGameServer.udpPort);
 	}
 
 	private void connectionFailed(String connectionIp)
@@ -75,14 +75,14 @@ public class ConnectionState extends State implements TextInputListener
 	@Override
 	public void render(SpriteBatch batch)
 	{
-		font.draw(batch, messageToUser, 20, 20);
+		drawer.draw(batch, messageToUser, 20, 20);
 	}
 
 	@Override
 	public void update()
 	{
 		if (client.isConnected())
-			BubbleTroubleGameClient.states.set(new PlayClientState(client));
+			ShooterGameClient.states.set(new PlayClientState(client));
         if(isConnecting)
             connectingTime += Gdx.graphics.getDeltaTime();
 	}

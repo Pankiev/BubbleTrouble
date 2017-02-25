@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.states.play;
+package com.bubbletrouble.game.states.interfaces;
 
 import java.util.Collection;
 

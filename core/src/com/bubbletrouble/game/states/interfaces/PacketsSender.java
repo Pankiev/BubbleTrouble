@@ -1,4 +1,4 @@
-package com.bubbletrouble.game.states.play;
+package com.bubbletrouble.game.states.interfaces;
 
 import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.action.CollisionAction;
