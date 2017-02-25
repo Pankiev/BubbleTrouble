@@ -17,14 +17,6 @@ public class PacketsRegisterer
 	private final static Class<? extends Annotation> defaultAnnotationType = Registerable.class;
 	private final static Class<? extends Annotation> defaultAnnotationBase = RegisterableBase.class;
 
-	public static Kryo registerPackets(Kryo destination)
-	{
-		destination = registerAllAnnotated(destination, defaultAnnotationType, "com.bubbletrouble.game.objects");
-		destination = registerAllAnnotated(destination, defaultAnnotationType, "com.bubbletrouble.game.packets");
-		destination = registerDefaults(destination);
-		return destination;
-	}
-
 	public static Kryo registerAllAnnotated(Kryo destination)
 	{
 		destination = registerAllAnnotated(destination, defaultAnnotationType);
@@ -40,9 +32,6 @@ public class PacketsRegisterer
 
 	private static String getUsedPackageName()
 	{
-		// Class<?> thisClassType = new PacketsRegisterer(){}.getClass();
-		// Package currentPackage = thisClassType.getPackage();
-		// return currentPackage.getName();
 		return "com.bubbletrouble.game";
 	}
 

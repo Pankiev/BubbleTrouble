@@ -14,10 +14,12 @@ public class ReconnectionState extends State
 {
 	private Client client;
 	BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private ConnectionData data;
 
-	public ReconnectionState(Client client)
+	public ReconnectionState(Client client, ConnectionData data)
 	{
 		this.client = client;
+		this.data = data;
 		drawer.setColor(new Color(0, 0, 0, 0.8f));
 	}
 
@@ -42,7 +44,7 @@ public class ReconnectionState extends State
 	{
 		tryReconnecting();
 		if (client.isConnected())
-			ShooterGameClient.states.set(new PlayClientState(client));
+			ShooterGameClient.states.set(new PlayClientState(client, data));
 	}
 
 }

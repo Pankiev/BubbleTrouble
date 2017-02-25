@@ -22,6 +22,7 @@ public class PlayerProduceInfo extends ProduceInfo
 	public float x = 0;
 	public float y = 0;
 	public int points;
+	public String name;
 	
 	@Override
 	public GameObject produce(State linkedState)
@@ -29,6 +30,7 @@ public class PlayerProduceInfo extends ProduceInfo
 		Player player = new Player((PlayState) linkedState, id);
 		player.setPosition(x, y);
 		player.setPoints(points);
+		player.setName(name);
 		return player;
 	}
 }

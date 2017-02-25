@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.kryonetcommon.IdProvider;
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
+import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 import com.bubbletrouble.game.packets.action.ActionInfo;
@@ -18,6 +19,7 @@ import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
 import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
 import com.bubbletrouble.game.packets.requsets.Request;
 import com.bubbletrouble.game.states.play.PlayServerState;
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -39,12 +41,19 @@ public class ShooterGameServer extends ApplicationAdapter
 		ShooterGameClient.assets = new Assets();
 		ShooterGameClient.assets.loadAll();
 		server = new Server();
-		PacketsRegisterer.registerPackets(server.getKryo());
+		registerPackets(server.getKryo());
 		server.start();
 		tryBindingServer();
 		addListeners();
 		playState = new PlayServerState(server);
 
+	}
+
+	private void registerPackets(Kryo kryo)
+	{
+		PacketsRegisterer.registerAllAnnotated(kryo, Registerable.class, "com.bubbletrouble.game.objects");
+		PacketsRegisterer.registerAllAnnotated(kryo, Registerable.class, "com.bubbletrouble.game.packets");
+		PacketsRegisterer.registerDefaults(kryo);
 	}
 
 	private void tryBindingServer()

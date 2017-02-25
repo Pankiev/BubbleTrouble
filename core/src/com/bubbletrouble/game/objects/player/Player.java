@@ -123,6 +123,7 @@ public class Player extends MovableGameObject
 		info.y = getY();
 		info.id = getId();
 		info.points = points;
+		info.name = getName();
 		return info;
 	}
 

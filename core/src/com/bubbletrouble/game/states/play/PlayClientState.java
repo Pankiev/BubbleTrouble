@@ -13,6 +13,7 @@ import com.bubbletrouble.game.packets.produce.ObstacleProduceInfo;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
+import com.bubbletrouble.game.states.connection.ConnectionData;
 import com.bubbletrouble.game.states.connection.PreReconnectionState;
 import com.bubbletrouble.game.states.interfaces.PacketsSender;
 import com.esotericsoftware.kryonet.Client;
@@ -22,11 +23,15 @@ import utils.Caster;
 public class PlayClientState extends PlayState implements PacketsSender
 {
 	Client client;
+	private ConnectionData data;
 
-	public PlayClientState(Client client)
+	public PlayClientState(Client client, ConnectionData data)
 	{
 		this.client = client;
-		addObject(new PlayerProduceInfo(client.getID()));
+		this.data = data;
+		PlayerProduceInfo info = new PlayerProduceInfo(client.getID());
+		info.name = data.getNickname();
+		addObject(info);
 		inputHandler = new PlayInputHandler(this);
 		activateInputHandler();
 	}
@@ -43,7 +48,7 @@ public class PlayClientState extends PlayState implements PacketsSender
 		gameObjects.forEach((id, object) -> object.clientUpdate());
 		if (!client.isConnected())
 		{
-			ShooterGameClient.states.set(new PreReconnectionState(client));
+			ShooterGameClient.states.set(new PreReconnectionState(client, data));
 			return;
 		}
 
@@ -113,7 +118,7 @@ public class PlayClientState extends PlayState implements PacketsSender
 		if (object.getId() == client.getID())
 		{
 			client.sendTCP(new DisconnectRequest());
-			ShooterGameClient.states.set(new PreReconnectionState(client));
+			ShooterGameClient.states.set(new PreReconnectionState(client, data));
 		} else
 			super.removeObject(object);
 	}

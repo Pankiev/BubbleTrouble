@@ -18,15 +18,17 @@ import utils.Sleeper;
 public class ConnectionState extends State implements TextInputListener
 {
 	private Client client;
-	private static final float timeout = 10.0f;
+	private static final float TIMEOUT = 10.0f;
 	private float connectingTime = 0.0f;
 	private String messageToUser = "";
 	private boolean isConnecting = false;
-	BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private BitmapStringDrawer drawer = new BitmapStringDrawer();
+	private ConnectionData data;
 
-	public ConnectionState(Client client)
+	public ConnectionState(Client client, ConnectionData data)
 	{
 		this.client = client;
+		this.data = data;
 		drawer.setColor(new Color(0, 0, 0, 0.8f));
 		askForIp();
 	}
@@ -58,7 +60,7 @@ public class ConnectionState extends State implements TextInputListener
 	{
         Sleeper.sleep(1000);
         connectingTime += Gdx.graphics.getDeltaTime() * 100;
-		if (connectingTime >= timeout)
+		if (connectingTime >= TIMEOUT)
 			onConnectionTimeout();
         else
             tryConnecting(connectionIp);
@@ -82,7 +84,7 @@ public class ConnectionState extends State implements TextInputListener
 	public void update()
 	{
 		if (client.isConnected())
-			ShooterGameClient.states.set(new PlayClientState(client));
+			ShooterGameClient.states.set(new PlayClientState(client, data));
         if(isConnecting)
             connectingTime += Gdx.graphics.getDeltaTime();
 	}

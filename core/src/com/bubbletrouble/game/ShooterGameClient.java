@@ -5,14 +5,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
+import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.Assets;
 import com.bubbletrouble.game.libgdxcommon.StateManager;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.remove.ObjectRemoveInfo;
-import com.bubbletrouble.game.states.connection.ConnectionState;
+import com.bubbletrouble.game.states.connection.PreConnectionState;
 import com.bubbletrouble.game.states.play.PlayClientState;
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -35,8 +37,15 @@ public class ShooterGameClient extends ApplicationAdapter
 		client = new Client();
 		client.start();
 		client.addListener(new ClientListener());
-		PacketsRegisterer.registerPackets(client.getKryo());
-		states.push(new ConnectionState(client));
+		registerPackets(client.getKryo());
+		states.push(new PreConnectionState(client));
+	}
+
+	private void registerPackets(Kryo kryo)
+	{
+		PacketsRegisterer.registerAllAnnotated(kryo, Registerable.class, "com.bubbletrouble.game.objects");
+		PacketsRegisterer.registerAllAnnotated(kryo, Registerable.class, "com.bubbletrouble.game.packets");
+		PacketsRegisterer.registerDefaults(kryo);
 	}
 
 	@Override
