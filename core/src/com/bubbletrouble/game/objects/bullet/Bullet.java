@@ -1,9 +1,10 @@
 package com.bubbletrouble.game.objects.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.bubbletrouble.game.ShooterGameClient;
+import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.kryonetcommon.IdProvider;
 import com.bubbletrouble.game.libgdxcommon.State;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
@@ -29,13 +30,20 @@ public class Bullet extends MovableGameObject
 
 	public Bullet(State linkedState, Vector2 mousePosition, Vector2 sourcePosition, long shooterId)
 	{
-		super((Texture) ShooterGameClient.assets.get("bullet.png"), linkedState);
+		super((Texture) ShooterGame.assets.get("bullet.png"), linkedState);
 		this.mousePosition = mousePosition;
 		this.shooterId = shooterId;
 		setPosition(sourcePosition.x, sourcePosition.y);
 		setMoveSpeed(6.5f);
 		flyingVector = sourcePosition.sub(mousePosition);
 		setPictureRotation();
+		playShotSound();
+	}
+
+	private void playShotSound()
+	{
+		Sound laserShot = ShooterGame.assets.get("laserShot.wav");
+		laserShot.play();
 	}
 
 	private void setPictureRotation()
@@ -78,19 +86,29 @@ public class Bullet extends MovableGameObject
 	{
 		removeFromGame(this);
 		removeFromGame(collision);
+		makeExplosion(collision);
+		addPoints(collision);
+	}
+
+	private void makeExplosion(GameObject collision)
+	{
 		Vector2 collisionCenter = collision.getCenter();
 		Explosion explosion = new Explosion(linkedState);
-		explosion.setPosition(collisionCenter.x, collisionCenter.y);
+		explosion.setPosition(collisionCenter.x - 16, collisionCenter.y - 16);
 		explosion.setId(IdProvider.getNextId());
 		((GameObjectsContainer) linkedState).addObject(explosion, explosion.getId());
 		((PacketsSender) linkedState).send(explosion.produceInfo());
+	}
 
+	private void addPoints(GameObject collision)
+	{
 		AddPointsAction addPointsAction = new AddPointsAction();
 		addPointsAction.pointsToAdd = collision.getPointsValue();
 		Player player = getShooter();
 		addPointsAction.makeAction(player);
 		((PacketsSender) linkedState).sendAction(addPointsAction, shooterId);
 	}
+
 
 	private Player getShooter()
 	{

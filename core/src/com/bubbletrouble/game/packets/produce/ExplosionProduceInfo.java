@@ -10,7 +10,6 @@ import com.bubbletrouble.game.objects.explosion.Explosion;
 public class ExplosionProduceInfo extends ProduceInfo
 {
 	public Vector2 position;
-	public long id;
 
 	@Override
 	public GameObject produce(State linkedState)

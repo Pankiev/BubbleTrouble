@@ -22,12 +22,14 @@ public abstract class PlayState extends State implements GameObjectsContainer
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		batch.setProjectionMatrix(camera.combined);
 		gameObjects.forEach((id, object) -> object.render(batch));
 	}
 
 	@Override
 	public void removeObject(long id)
 	{
+		gameObjects.forEach((ID, object) -> System.out.println(object.getClass().getSimpleName() + " " + ID));
 		GameObject toRemove = gameObjects.get(id);
 		removeObject(toRemove);
 	}

@@ -1,6 +1,9 @@
 package com.bubbletrouble.game.states.play;
 
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.ShooterGameClient;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.player.Player;
@@ -23,10 +26,13 @@ import utils.Sleeper;
 public class PlayClientState extends PlayState implements PacketsSender
 {
 	Client client;
-	private ConnectionData data;
+	private final ConnectionData data;
+	private final Texture background = ShooterGame.assets.get("background.jpg");
+	private final Music backgroundMusic = ShooterGame.assets.get("backgroundMusic.mp3");
 
 	public PlayClientState(Client client, ConnectionData data)
 	{
+		backgroundMusic.play();
 		this.client = client;
 		this.data = data;
 		PlayerProduceInfo info = new PlayerProduceInfo(client.getID());
@@ -43,12 +49,14 @@ public class PlayClientState extends PlayState implements PacketsSender
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		batch.draw(background, 0, 0);
 		super.render(batch);
 	}
 
 	@Override
 	public void update()
 	{
+		shakeHandle();
 		gameObjects.forEach((id, object) -> object.clientUpdate());
 		pushNewObjects();
 		clearGarbage();
@@ -120,6 +128,8 @@ public class PlayClientState extends PlayState implements PacketsSender
 	@Override
 	public void removeObject(GameObject object)
 	{
+		System.out.println(this.getClass().getSimpleName() + " Removing object id: " + object.getId() + " Type: "
+				+ object.getClass().getSimpleName());
 		if (object.getId() == client.getID())
 		{
 			client.sendTCP(new DisconnectRequest());

@@ -15,7 +15,7 @@ public class StateManager
 		usedState().update();
 	}
 
-	private State usedState()
+	public State usedState()
 	{
 		return states.peek();
 	}
