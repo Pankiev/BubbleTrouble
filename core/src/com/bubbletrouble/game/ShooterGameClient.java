@@ -1,5 +1,8 @@
 package com.bubbletrouble.game;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 import com.bubbletrouble.game.kryonetcommon.PacketsRegisterer;
 import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.packets.action.ActionInfo;
@@ -14,16 +17,17 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import utils.Sleeper;
+import utils.Sleeper.TimeoutException;
 
 public class ShooterGameClient extends ShooterGame
 {
-	Client client = new Client();
+	private final Client client = new Client();
+	private final Collection<Object> unhandledPackets = new LinkedList<>();
 
 	@Override
 	public void create()
 	{
 		super.create();
-		client = new Client();
 		client.start();
 		client.addListener(new ClientListener());
 		registerPackets(client.getKryo());
@@ -61,12 +65,17 @@ public class ShooterGameClient extends ShooterGame
 		@Override
 		public void received(Connection connection, Object object)
 		{
-			PlayClientState playState = findPlayState();
-			while (playState == null)
+			PlayClientState playState;
+			try
 			{
-				Sleeper.sleep(10);
-				playState = findPlayState();
+				playState = Sleeper.sleepUntillReceiveOtherThanNull(() -> findPlayState(), 1000);
+			} catch (TimeoutException exception)
+			{
+				System.out.println("unhandledPacket: " + object);
+				unhandledPackets.add(object);
+				return;
 			}
+
 
 			if (object instanceof ObjectRemoveInfo)
 			{

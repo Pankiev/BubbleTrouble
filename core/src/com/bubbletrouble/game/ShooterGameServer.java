@@ -8,6 +8,7 @@ import com.bubbletrouble.game.kryonetcommon.Registerable;
 import com.bubbletrouble.game.libgdxcommon.exception.GameException;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.packets.database.DatabaseOperation;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
@@ -114,6 +115,11 @@ public class ShooterGameServer extends ShooterGame
 		playState.addRandomObstacle();
 	}
 
+	private void performDatabaseOperation(DatabaseOperation operation)
+	{		
+		operation.perform();
+	}
+
 	private class ServerListener extends Listener
 	{
 		@Override
@@ -143,8 +149,9 @@ public class ShooterGameServer extends ShooterGame
 				obstacleRequestReceived();
 			else if (object instanceof DisconnectRequest)
 				connection.close();
+			else if (object instanceof DatabaseOperation)
+				performDatabaseOperation((DatabaseOperation) object);
 		}
-
 	}
 
 	private class ServerBindingExcepiton extends GameException

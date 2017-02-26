@@ -31,11 +31,11 @@ public class PlayServerState extends PlayState implements PacketsSender
 	}
 
 	@Override
-	public void removeObject(GameObject object)
+	public GameObject removeObject(GameObject object)
 	{
-		super.removeObject(object);
 		long id = object.getId();
 		server.sendToAllTCP(new ObjectRemoveInfo(id));
+		return super.removeObject(object);
 	}
 
 	@Override

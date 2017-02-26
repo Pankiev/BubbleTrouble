@@ -27,17 +27,17 @@ public abstract class PlayState extends State implements GameObjectsContainer
 	}
 
 	@Override
-	public void removeObject(long id)
+	public GameObject removeObject(long id)
 	{
 		gameObjects.forEach((ID, object) -> System.out.println(object.getClass().getSimpleName() + " " + ID));
 		GameObject toRemove = gameObjects.get(id);
-		removeObject(toRemove);
+		return removeObject(toRemove);
 	}
 
 	@Override
-	public void removeObject(GameObject object)
+	public GameObject removeObject(GameObject object)
 	{
-		gameObjects.remove(object.getId());
+		return gameObjects.remove(object.getId());
 	}
 
 	@Override

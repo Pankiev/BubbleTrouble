@@ -7,9 +7,9 @@ import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 public interface GameObjectsContainer
 {
 
-	void removeObject(long id);
+	GameObject removeObject(long id);
 
-	void removeObject(GameObject object);
+	GameObject removeObject(GameObject object);
 
 	GameObject getObject(long id);
 

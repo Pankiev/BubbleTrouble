@@ -9,6 +9,7 @@ import com.bubbletrouble.game.objects.player.MoveLeftAction;
 import com.bubbletrouble.game.objects.player.MoveRightAction;
 import com.bubbletrouble.game.objects.player.MoveUpAction;
 import com.bubbletrouble.game.packets.requsets.AddObstacleRequest;
+import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
 import com.bubbletrouble.game.packets.requsets.ShootRequest;
 
 public class PlayInputHandler extends InputProcessorAdapter
@@ -54,6 +55,14 @@ public class PlayInputHandler extends InputProcessorAdapter
 		public void handle()
 		{
 			playState.sendAction(new MoveDownAction(), getPlayerId());
+		}
+	}
+
+	public class FKeyHandler implements KeyHandler
+	{
+		public void handle()
+		{
+			playState.send(new DisconnectRequest());
 		}
 	}
 

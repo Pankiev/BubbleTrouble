@@ -27,6 +27,7 @@ public class Player extends MovableGameObject
 	private float ANGLE_UPDATE_INTERVAL = 0.1f;
 	private float angleUpdateTime = 0.0f;
 	private int points = 0;
+
 	private BitmapFont font = ShooterGame.assets.getFont();
 	private float targetRotation = 0.0f;
 
@@ -176,6 +177,11 @@ public class Player extends MovableGameObject
 	public void setPoints(int points)
 	{
 		this.points = points;
+	}
+
+	public int getPoints()
+	{
+		return points;
 	}
 
 	public void setRotationTarget(float rotation)

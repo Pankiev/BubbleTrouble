@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bubbletrouble.game.ShooterGame;
 import com.bubbletrouble.game.ShooterGameClient;
+import com.bubbletrouble.game.database.tables.Score;
 import com.bubbletrouble.game.libgdxcommon.objects.GameObject;
 import com.bubbletrouble.game.objects.player.Player;
 import com.bubbletrouble.game.objects.player.UpdateNameAction;
@@ -12,6 +13,7 @@ import com.bubbletrouble.game.packets.action.Action;
 import com.bubbletrouble.game.packets.action.ActionInfo;
 import com.bubbletrouble.game.packets.action.CollisionAction;
 import com.bubbletrouble.game.packets.action.CollisionActionInfo;
+import com.bubbletrouble.game.packets.database.ScoreAddDatabaseOperation;
 import com.bubbletrouble.game.packets.produce.PlayerProduceInfo;
 import com.bubbletrouble.game.packets.produce.ProduceInfo;
 import com.bubbletrouble.game.packets.requsets.DisconnectRequest;
@@ -69,7 +71,6 @@ public class PlayClientState extends PlayState implements PacketsSender
 		inputHandler.process();
 	}
 
-
 	@Override
 	public void sendAction(Action action, long id)
 	{
@@ -96,13 +97,7 @@ public class PlayClientState extends PlayState implements PacketsSender
 
 	public void applyChanges(ActionInfo actionInfo)
 	{
-		GameObject object = getObject(actionInfo.targetId);
-		while (object == null)
-		{
-			Sleeper.sleep(10);
-			object = getObject(actionInfo.targetId);
-		}
-
+		GameObject object = Sleeper.sleepUntillReceiveOtherThanNull(() -> getObject(actionInfo.targetId), 2000);
 		actionInfo.action.applyChangesToOther(object);
 	}
 
@@ -126,16 +121,20 @@ public class PlayClientState extends PlayState implements PacketsSender
 	}
 
 	@Override
-	public void removeObject(GameObject object)
+	public GameObject removeObject(GameObject object)
 	{
 		System.out.println(this.getClass().getSimpleName() + " Removing object id: " + object.getId() + " Type: "
 				+ object.getClass().getSimpleName());
 		if (object.getId() == client.getID())
 		{
+			Player userPlayer = Caster.cast(super.removeObject(object), Player.class);
+			Score score = new Score(userPlayer.getName(), userPlayer.getPoints());
+			client.sendTCP(new ScoreAddDatabaseOperation(score));
 			client.sendTCP(new DisconnectRequest());
 			ShooterGameClient.states.set(new PreReconnectionState(client, data));
+			return userPlayer;
 		} else
-			super.removeObject(object);
+			return super.removeObject(object);
 	}
 
 }

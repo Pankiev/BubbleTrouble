@@ -21,7 +21,15 @@ public class Score
 
 	@Column(name = "points")
 	private int points;
+	
+	public Score(){}
+	public Score(String nickname, int points)
+	{
+		this.nickname = nickname;
+		this.points = points;	
+	}
 
+	
 	public String getNickname()
 	{
 		return nickname;
