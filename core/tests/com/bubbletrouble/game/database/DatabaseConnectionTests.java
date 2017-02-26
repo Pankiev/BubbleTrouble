@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import com.bubbletrouble.game.database.managers.ScoreManager;
 
-public class ConnectionTests
+public class DatabaseConnectionTests
 {
 
 	@Test
