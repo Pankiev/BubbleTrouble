@@ -8,4 +8,4 @@ Frameworks and libraries used:
 -Google's Reflections
 
 Screenshot:
-[[https://github.com/Pankiev/ClientServerShooter/tree/master/screenshots/overview.jpg|alt=octocat]]
+[[https://github.com/Pankiev/ClientServerShooter/tree/master/screenshots/overview.jpg]]
